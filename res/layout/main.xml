@@ -21,11 +21,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" >
 
-                <TextView
-                    android:id="@+id/textview3"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:text="this is a third tab" />
+                <LinearLayout
+                    android:id="@+id/linearLayout1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+
+                    <edu.wut.wpam.widgets.Plot
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/simplePlot"
+                        android:layout_width="match_parent"
+                        android:layout_height="66dp" />
+
+                    <TextView
+                        android:id="@+id/textview3"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:text="this is a third tab" />
+
+                </LinearLayout>
 
             </FrameLayout>
 
