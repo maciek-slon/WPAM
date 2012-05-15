@@ -1,7 +1,6 @@
 package edu.wut.wpam.widgets;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -75,7 +74,7 @@ public class Plot extends View {
 		elem_max = 0.0f;
 		
 		x_start = 0.0f;
-		x_end = 30.0f;
+		x_end = 1800.0f;
 		y_start = 0.0f;
 		y_end = 5.0f;
 		
@@ -116,6 +115,11 @@ public class Plot extends View {
 		
 		if (elem.y > elem_max) {
 			elem_max = elem.y;
+			recalculateScales();
+		}
+		
+		if (elem.x > x_end) {
+			x_end = elem.x;
 			recalculateScales();
 		}
 	}
@@ -223,13 +227,15 @@ public class Plot extends View {
     	
     	Paint paint = new Paint();
     	paint.setColor(Color.WHITE);
-    	paint.setStrokeWidth(2/x_scale);
-    	paint.setPathEffect(new DashPathEffect(new float[] {2/y_scale,4/y_scale}, 0));
+    	Log.d("Plot", "x_scale: "+x_scale);
+    	paint.setStrokeWidth(2/Math.abs(x_scale));
+    	paint.setPathEffect(new DashPathEffect(new float[] {2/Math.abs(y_scale),4/Math.abs(y_scale)}, 0));
     	canvas.drawLine(marker, y_start, marker, y_end, paint);
     }
     
     @Override
-    protected void onDraw(Canvas canvas) {    	
+    protected void onDraw(Canvas canvas) {   
+    	recalculateScales();
     	Rect rect = new Rect(0, 0, getWidth(), getHeight());
         Paint paint = new Paint();
         paint.setColor(Color.BLACK); 

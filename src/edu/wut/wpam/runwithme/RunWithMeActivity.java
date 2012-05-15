@@ -22,12 +22,14 @@ public class RunWithMeActivity extends TabActivity {
 	
 	private Timer myTimer;
 	IntervalWorkout workout = new IntervalWorkout();
+	MyLocationListener myLocationListener;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
 
 		// ---------------------------------------------
 		// Setup tabs
@@ -51,7 +53,8 @@ public class RunWithMeActivity extends TabActivity {
 		// Setup GPS
 		// ---------------------------------------------
 		LocationManager mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new MyLocationListener());
+		myLocationListener = new MyLocationListener();
+		mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, myLocationListener);
 		
 		// ---------------------------------------------
 		// Setup timer
@@ -77,9 +80,12 @@ public class RunWithMeActivity extends TabActivity {
 		plot.setXEnd(workout.getLength());
 		plot.setIntervals(workout.getIntervals());
 	}
-
+	
+	@Override
 	public void onDestroy() {
 		LocationManager mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		mlocManager.removeUpdates(myLocationListener);
+		super.onDestroy();
 	}
 	
 	

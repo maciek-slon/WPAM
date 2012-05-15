@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="10dp"
+    android:orientation="vertical"
+    android:padding="10dp" >
+
+    <Button
+        android:id="@+id/btnIntervals"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_intervals"
+        android:text="@string/welcome_intervals"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/Button01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_distance"
+        android:text="@string/welcome_distances"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/btnStopwatch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_distance"
+        android:text="@string/welcome_stopwatch"
+        android:textSize="20dp" />
+
+</LinearLayout>
