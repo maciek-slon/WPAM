@@ -4,12 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.LightingColorFilter;
 import android.graphics.LinearGradient;
-import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.Cap;
+import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.RadialGradient;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
@@ -37,23 +38,23 @@ public final class StopWatch extends View {
 	
 	private Paint titlePaint;	
 	private Path titlePath;
-
-	private Paint logoPaint;
-	private Bitmap logo;
-	private Matrix logoMatrix;
-	private float logoScale;
 	
 	private Paint handPaint;
 	private Path handPath;
 	private Paint handScrewPaint;
 	
-	private Paint backgroundPaint; 
+	private Paint backgroundPaint;
+	
+	private Paint smallPaint;
+	private Paint smallBlackPaint;
+	private RectF smallDial;
+	private Path smallHandPath;
 	// end drawing tools
 	
 	private Bitmap background; // holds the cached static part
 	
 	// scale configuration
-	private static final int totalNicks = 100;
+	private static final int totalNicks = 300;
 	private static final float degreesPerNick = 360.0f / totalNicks;	
 	private static final int centerDegree = 40; // the one in the top center (12 o'clock)
 	private static final int minDegrees = -30;
@@ -124,6 +125,7 @@ public final class StopWatch extends View {
 
 	private void init() {
 		initDrawingTools();
+		setHandTarget(5);
 	}
 
 	private String getTitle() {
@@ -131,7 +133,7 @@ public final class StopWatch extends View {
 	}
 
 	private void initDrawingTools() {
-		rimRect = new RectF(0.1f, 0.1f, 0.9f, 0.9f);
+		rimRect = new RectF(0.05f, 0.05f, 0.95f, 0.95f);
 
 		// the linear gradient is a bit skewed for realism
 		rimPaint = new Paint();
@@ -141,6 +143,9 @@ public final class StopWatch extends View {
 										   Color.rgb(0x30, 0x31, 0x30),
 										   Shader.TileMode.CLAMP));		
 
+		facePaint = new Paint();
+		facePaint.setColor(Color.rgb(200, 200, 200));
+		
 		rimCirclePaint = new Paint();
 		rimCirclePaint.setAntiAlias(true);
 		rimCirclePaint.setStyle(Paint.Style.STROKE);
@@ -163,16 +168,16 @@ public final class StopWatch extends View {
 
 		scalePaint = new Paint();
 		scalePaint.setStyle(Paint.Style.STROKE);
-		scalePaint.setColor(0x9f004d0f);
+		scalePaint.setColor(Color.BLACK);
 		scalePaint.setStrokeWidth(0.005f);
 		scalePaint.setAntiAlias(true);
 		
 		scalePaint.setTextSize(0.045f);
 		scalePaint.setTypeface(Typeface.SANS_SERIF);
-		scalePaint.setTextScaleX(0.8f);
+		scalePaint.setTextScaleX(0.7f);
 		scalePaint.setTextAlign(Paint.Align.CENTER);		
 		
-		float scalePosition = 0.10f;
+		float scalePosition = 0.01f;
 		scaleRect = new RectF();
 		scaleRect.set(faceRect.left + scalePosition, faceRect.top + scalePosition,
 					  faceRect.right - scalePosition, faceRect.bottom - scalePosition);
@@ -183,7 +188,7 @@ public final class StopWatch extends View {
 		titlePaint.setTypeface(Typeface.DEFAULT_BOLD);
 		titlePaint.setTextAlign(Paint.Align.CENTER);
 		titlePaint.setTextSize(0.05f);
-		titlePaint.setTextScaleX(0.8f);
+		titlePaint.setTextScaleX(0.7f);
 
 		titlePath = new Path();
 		titlePath.addArc(new RectF(0.24f, 0.24f, 0.76f, 0.76f), -180.0f, -180.0f);
@@ -199,8 +204,8 @@ public final class StopWatch extends View {
 		handPath = new Path();
 		handPath.moveTo(0.5f, 0.5f + 0.2f);
 		handPath.lineTo(0.5f - 0.010f, 0.5f + 0.2f - 0.007f);
-		handPath.lineTo(0.5f - 0.002f, 0.5f - 0.32f);
-		handPath.lineTo(0.5f + 0.002f, 0.5f - 0.32f);
+		handPath.lineTo(0.5f - 0.001f, 0.5f - 0.41f);
+		handPath.lineTo(0.5f + 0.001f, 0.5f - 0.41f);
 		handPath.lineTo(0.5f + 0.010f, 0.5f + 0.2f - 0.007f);
 		handPath.lineTo(0.5f, 0.5f + 0.2f);
 		handPath.addCircle(0.5f, 0.5f, 0.025f, Path.Direction.CW);
@@ -212,6 +217,33 @@ public final class StopWatch extends View {
 		
 		backgroundPaint = new Paint();
 		backgroundPaint.setFilterBitmap(true);
+		
+		smallPaint = new Paint();
+		smallPaint.setAntiAlias(true);
+		smallPaint.setStrokeCap(Cap.BUTT);
+		smallPaint.setStrokeWidth(0.007f);
+		smallPaint.setStyle(Style.STROKE);
+		smallPaint.setColor(Color.rgb(164, 0, 0));
+		
+		smallBlackPaint = new Paint();
+		smallBlackPaint.setAntiAlias(true);
+		smallBlackPaint.setColor(Color.BLACK);
+		smallPaint.setStyle(Style.STROKE);
+		
+		float smallDialSize = 0.12f;
+		smallDial = new RectF(-smallDialSize, -smallDialSize, smallDialSize, smallDialSize);
+		
+		float sh = 0.07f;
+		float lo = 0.13f;
+		smallHandPath = new Path();
+		smallHandPath.moveTo(      0,  sh);
+		smallHandPath.lineTo(-0.010f,  sh - 0.007f);
+		smallHandPath.lineTo(-0.001f, -lo);
+		smallHandPath.lineTo( 0.001f, -lo);
+		smallHandPath.lineTo( 0.010f,  sh - 0.007f);
+		smallHandPath.lineTo(      0,  sh);
+		smallHandPath.addCircle(0, 0, 0.025f, Path.Direction.CW);
+		
 	}
 	
 	@Override
@@ -238,7 +270,7 @@ public final class StopWatch extends View {
 		} 
 	}
 	
-	// in case there is no size specified
+	// in case there is no size textSizespecified
 	private int getPreferredSize() {
 		return 300;
 	}
@@ -262,59 +294,152 @@ public final class StopWatch extends View {
 		canvas.drawOval(scaleRect, scalePaint);
 
 		canvas.save(Canvas.MATRIX_SAVE_FLAG);
+		
+		scalePaint.setStrokeWidth(0.0015f);
+		scalePaint.setColor(Color.BLACK);
 		for (int i = 0; i < totalNicks; ++i) {
 			float y1 = scaleRect.top;
-			float y2 = y1 - 0.020f;
+			float y2 = y1 + 0.014f;
+
+			scalePaint.setStrokeWidth(0.0015f);
+			if (i % 10 == 0) {
+				scalePaint.setStrokeWidth(0.003f);
+				y2 = y1 + 0.036f;
+				
+			} else if (i % 5 == 0) {
+				y2 = y1 + 0.024f;
+			}
+			
 			
 			canvas.drawLine(0.5f, y1, 0.5f, y2, scalePaint);
-			
-			if (i % 5 == 0) {
-				int value = nickToDegree(i);
-				
-				if (value >= minDegrees && value <= maxDegrees) {
-					String valueString = Integer.toString(value);
-					canvas.drawText(valueString, 0.5f, y2 - 0.015f, scalePaint);
-				}
-			}
 			
 			canvas.rotate(degreesPerNick, 0.5f, 0.5f);
 		}
 		canvas.restore();		
 	}
 	
-	private int nickToDegree(int nick) {
-		int rawDegree = ((nick < totalNicks / 2) ? nick : (nick - totalNicks)) * 2;
-		int shiftedDegree = rawDegree + centerDegree;
-		return shiftedDegree;
+	private void drawNumbers(Canvas canvas) {
+		canvas.save(Canvas.MATRIX_SAVE_FLAG);
+		canvas.translate(0.5f, 0.5f);
+
+		scalePaint.setStyle(Style.FILL_AND_STROKE);
+		
+		
+		float scale = (float) getWidth();
+		Rect bounds = new Rect();
+		
+		scalePaint.setColor(Color.BLACK);
+		scalePaint.setTextScaleX(0.7f);
+		
+		float fontSize = 0.063f;
+		scalePaint.setTextSize(fontSize * scale);
+		scalePaint.getTextBounds("0", 0, 1, bounds);
+		scalePaint.setTextSize(fontSize);
+		float offy = bounds.height() / scale / 2;
+		
+		float x, y;
+		float r = 0.35f;
+		for (int i = 2; i <= 30; i+=2) {
+			x = (float) (r * Math.cos(Math.toRadians(i * 12 - 90)));
+			y = (float) (r * Math.sin(Math.toRadians(i * 12 - 90)));
+						
+			String text = Integer.toString(i);
+			
+
+			
+			
+			y = y + offy;
+			canvas.drawText(text, x, y, scalePaint);
+		}
+		
+		scalePaint.setColor(Color.rgb(128, 0, 0));
+		scalePaint.setTextScaleX(1.0f);
+		
+		r = 0.33f;
+		fontSize = 0.046f;
+		scalePaint.setTextSize(fontSize * scale);
+		scalePaint.getTextBounds("0", 0, 1, bounds);
+		scalePaint.setTextSize(fontSize);
+		offy = bounds.height() / scale / 2;
+		
+		for (int i = 1; i <= 30; i+=2) {
+			x = (float) (r * Math.cos(Math.toRadians(i * 12 - 90)));
+			y = (float) (r * Math.sin(Math.toRadians(i * 12 - 90)));
+						
+			String valueString = Integer.toString(i+30);
+			y = y + offy;
+			canvas.drawText(valueString, x, y, scalePaint);
+		}
+		
+		canvas.restore();
 	}
 	
+	private void drawSmallDial(Canvas canvas) { 
+		canvas.save(Canvas.MATRIX_SAVE_FLAG);
+		canvas.translate(0.5f, 0.33f);
+		canvas.rotate(-90);
+
+
+		smallBlackPaint.setStrokeWidth(0.002f);
+		smallBlackPaint.setStyle(Style.STROKE);
+		
+		canvas.drawCircle(0, 0, -smallDial.top+0.0035f, smallBlackPaint);
+		canvas.drawCircle(0, 0, -smallDial.top-0.0035f, smallBlackPaint);
+		
+		smallBlackPaint.setStrokeWidth(0.004f);
+		
+		for (int i = 0; i < 15; ++i) {
+			canvas.drawArc(smallDial, 12, 12, false, smallPaint);
+			canvas.drawLine(-smallDial.top-0.0035f, 0, -smallDial.top+0.015f, 0, smallBlackPaint);
+
+			canvas.rotate(24);
+		}
+		
+		canvas.restore();
+	}
+	
+	private void drawSmallNumbers(Canvas canvas) {
+		canvas.save(Canvas.MATRIX_SAVE_FLAG);
+		canvas.translate(0.5f, 0.33f);
+
+		scalePaint.setStyle(Style.FILL_AND_STROKE);
+		
+		
+		float scale = (float) getWidth();
+		Rect bounds = new Rect();
+		
+		scalePaint.setColor(Color.BLACK);
+		scalePaint.setTextScaleX(1.0f);
+		
+		float fontSize = 0.028f;
+		scalePaint.setTextSize(fontSize * scale);
+		scalePaint.getTextBounds("0", 0, 1, bounds);
+		scalePaint.setTextSize(fontSize);
+		float offy = bounds.height() / scale / 2;
+		
+		float x, y;
+		float r = 0.095f;
+		for (int i = 1; i <= 15; i++) {
+			x = (float) (r * Math.cos(Math.toRadians(i * 24 - 90)));
+			y = (float) (r * Math.sin(Math.toRadians(i * 24 - 90)));
+						
+			String text = Integer.toString(i);
+
+			y = y + offy;
+			canvas.drawText(text, x, y, scalePaint);
+		}
+				
+		canvas.restore();
+	}
+		
 	private float degreeToAngle(float degree) {
 		return (degree - centerDegree) / 2.0f * degreesPerNick;
 	}
 	
 	private void drawTitle(Canvas canvas) {
 		String title = getTitle();
+		title = "Сделано в СССР";
 		canvas.drawTextOnPath(title, titlePath, 0.0f,0.0f, titlePaint);				
-	}
-	
-	private void drawLogo(Canvas canvas) {
-		canvas.save(Canvas.MATRIX_SAVE_FLAG);
-		canvas.translate(0.5f - logo.getWidth() * logoScale / 2.0f, 
-						 0.5f - logo.getHeight() * logoScale / 2.0f);
-
-		int color = 0x00000000;
-		float position = getRelativeTemperaturePosition();
-		if (position < 0) {
-			color |= (int) ((0xf0) * -position); // blue
-		} else {
-			color |= ((int) ((0xf0) * position)) << 16; // red			
-		}
-		//Log.d(TAG, "*** " + Integer.toHexString(color));
-		LightingColorFilter logoFilter = new LightingColorFilter(0xff338822, color);
-		logoPaint.setColorFilter(logoFilter);
-		
-		canvas.drawBitmap(logo, logoMatrix, logoPaint);
-		canvas.restore();		
 	}
 
 	private void drawHand(Canvas canvas) {
@@ -326,6 +451,19 @@ public final class StopWatch extends View {
 			canvas.restore();
 			
 			canvas.drawCircle(0.5f, 0.5f, 0.01f, handScrewPaint);
+		}
+	}
+	
+	private void drawSmallHand(Canvas canvas) {
+		if (handInitialized) {
+			float handAngle = 10;
+			canvas.save(Canvas.MATRIX_SAVE_FLAG);
+			canvas.translate(0.5f, 0.33f);
+			canvas.rotate(handAngle);
+			canvas.drawPath(smallHandPath, handPaint);
+			
+			canvas.drawCircle(0, 0, 0.01f, handScrewPaint);
+			canvas.restore();
 		}
 	}
 
@@ -345,8 +483,8 @@ public final class StopWatch extends View {
 		canvas.save(Canvas.MATRIX_SAVE_FLAG);
 		canvas.scale(scale, scale);
 
-		drawLogo(canvas);
 		drawHand(canvas);
+		drawSmallHand(canvas);
 		
 		canvas.restore();
 	
@@ -376,6 +514,9 @@ public final class StopWatch extends View {
 		drawRim(backgroundCanvas);
 		drawFace(backgroundCanvas);
 		drawScale(backgroundCanvas);
+		drawNumbers(backgroundCanvas);
+		drawSmallDial(backgroundCanvas);
+		drawSmallNumbers(backgroundCanvas);
 		drawTitle(backgroundCanvas);		
 	}
 
@@ -412,14 +553,6 @@ public final class StopWatch extends View {
 		} else {
 			lastHandMoveTime = System.currentTimeMillis();
 			moveHand();
-		}
-	}
-	
-	private float getRelativeTemperaturePosition() {
-		if (handPosition < centerDegree) {
-			return - (centerDegree - handPosition) / (float) (centerDegree - minDegrees);
-		} else {
-			return (handPosition - centerDegree) / (float) (maxDegrees - centerDegree);
 		}
 	}
 	

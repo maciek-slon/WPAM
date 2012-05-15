@@ -3,9 +3,10 @@
 
     <string name="hello">Hello World, RunWithMeActivity!</string>
     <string name="app_name">RunWithMe</string>
-    <string name="welcome_title">Co chcesz dziś robić?</string>
+    <string name="welcome_title">Co dziś porobimy?</string>
     <string name="welcome_intervals">Trening interwałowy</string>
     <string name="welcome_distances">Dystansy</string>
     <string name="welcome_stopwatch">Stoper</string>
+    <string name="intervals_speed">Szybkość</string>
 
 </resources>

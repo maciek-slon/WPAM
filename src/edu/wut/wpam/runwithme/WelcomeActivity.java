@@ -13,9 +13,9 @@ public class WelcomeActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.welcome);
+        setContentView(R.layout.stopwatch);
 
-        Button next = (Button) findViewById(R.id.btnIntervals);
+        /*Button next = (Button) findViewById(R.id.btnIntervals);
         next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
             	MediaPlayer mp = MediaPlayer.create(getBaseContext(), R.raw.beep);
@@ -31,6 +31,6 @@ public class WelcomeActivity extends Activity {
                 startActivityForResult(myIntent, 0);
             }
 
-        });
+        });*/
     }
 }
