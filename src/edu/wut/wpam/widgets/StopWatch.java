@@ -16,6 +16,7 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.format.Time;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -49,6 +50,8 @@ public final class StopWatch extends View {
 	private Paint smallBlackPaint;
 	private RectF smallDial;
 	private Path smallHandPath;
+	
+	private Paint logoPaint;
 	// end drawing tools
 	
 	private Bitmap background; // holds the cached static part
@@ -57,8 +60,6 @@ public final class StopWatch extends View {
 	private static final int totalNicks = 300;
 	private static final float degreesPerNick = 360.0f / totalNicks;	
 	private static final int centerDegree = 40; // the one in the top center (12 o'clock)
-	private static final int minDegrees = -30;
-	private static final int maxDegrees = 110;
 	
 	// hand dynamics -- all are angular expressed in F degrees
 	private boolean handInitialized = false;
@@ -67,6 +68,13 @@ public final class StopWatch extends View {
 	private float handVelocity = 0.0f;
 	private float handAcceleration = 0.0f;
 	private long lastHandMoveTime = -1L;
+
+	private boolean running;
+
+	private float mins;
+	private float secs;
+	private long starttime;
+	private long curtime;
 	
 	
 	public StopWatch(Context context) {
@@ -125,7 +133,15 @@ public final class StopWatch extends View {
 
 	private void init() {
 		initDrawingTools();
-		setHandTarget(5);
+		
+		running = true;
+		starttime = System.currentTimeMillis();
+	}
+
+	private void setTime(float s) {
+		mins = s / 60;
+		secs = s % 60;
+		
 	}
 
 	private String getTitle() {
@@ -183,9 +199,8 @@ public final class StopWatch extends View {
 					  faceRect.right - scalePosition, faceRect.bottom - scalePosition);
 
 		titlePaint = new Paint();
-		titlePaint.setColor(0xaf946109);
+		titlePaint.setColor(Color.rgb(20, 10, 10));
 		titlePaint.setAntiAlias(true);
-		titlePaint.setTypeface(Typeface.DEFAULT_BOLD);
 		titlePaint.setTextAlign(Paint.Align.CENTER);
 		titlePaint.setTextSize(0.05f);
 		titlePaint.setTextScaleX(0.7f);
@@ -244,6 +259,12 @@ public final class StopWatch extends View {
 		smallHandPath.lineTo(      0,  sh);
 		smallHandPath.addCircle(0, 0, 0.025f, Path.Direction.CW);
 		
+		logoPaint = new Paint();
+		logoPaint.setAntiAlias(true);
+		logoPaint.setColor(Color.rgb(20, 10, 10));
+		logoPaint.setStyle(Style.STROKE);
+		logoPaint.setStrokeWidth(0.008f);
+		logoPaint.setStrokeCap(Cap.ROUND);
 	}
 	
 	@Override
@@ -270,7 +291,7 @@ public final class StopWatch extends View {
 		} 
 	}
 	
-	// in case there is no size textSizespecified
+	// in case there is no size specified
 	private int getPreferredSize() {
 		return 300;
 	}
@@ -431,9 +452,26 @@ public final class StopWatch extends View {
 				
 		canvas.restore();
 	}
+	
+	private void drawLogo(Canvas canvas) {
+		canvas.save(Canvas.MATRIX_SAVE_FLAG);
+	
+		float f = 0.05f;
+		float ff = f * 0.3f;
 		
-	private float degreeToAngle(float degree) {
-		return (degree - centerDegree) / 2.0f * degreesPerNick;
+		canvas.translate(0.5f, 0.65f);
+		canvas.drawCircle(0, 0, f, logoPaint);
+		canvas.drawCircle(0, 0, f*0.08f, logoPaint);
+		canvas.drawLine(0, f*0.25f, 0, -f*0.7f, logoPaint);
+		
+		canvas.translate(0, -f*1.5f);
+		canvas.drawArc(new RectF(-ff, -ff, ff, ff), 120, 300, false, logoPaint);
+		
+		canvas.translate(0, f*1.5f);
+		canvas.rotate(-45);
+		canvas.drawLine(0, -f, 0, -f*1.2f, logoPaint);
+		
+		canvas.restore();
 	}
 	
 	private void drawTitle(Canvas canvas) {
@@ -443,28 +481,24 @@ public final class StopWatch extends View {
 	}
 
 	private void drawHand(Canvas canvas) {
-		if (handInitialized) {
-			float handAngle = degreeToAngle(handPosition);
-			canvas.save(Canvas.MATRIX_SAVE_FLAG);
-			canvas.rotate(handAngle, 0.5f, 0.5f);
-			canvas.drawPath(handPath, handPaint);
-			canvas.restore();
-			
-			canvas.drawCircle(0.5f, 0.5f, 0.01f, handScrewPaint);
-		}
+		float handAngle = secs * 12;
+		canvas.save(Canvas.MATRIX_SAVE_FLAG);
+		canvas.rotate(handAngle, 0.5f, 0.5f);
+		canvas.drawPath(handPath, handPaint);
+		canvas.restore();
+		
+		canvas.drawCircle(0.5f, 0.5f, 0.01f, handScrewPaint);
 	}
 	
 	private void drawSmallHand(Canvas canvas) {
-		if (handInitialized) {
-			float handAngle = 10;
-			canvas.save(Canvas.MATRIX_SAVE_FLAG);
-			canvas.translate(0.5f, 0.33f);
-			canvas.rotate(handAngle);
-			canvas.drawPath(smallHandPath, handPaint);
-			
-			canvas.drawCircle(0, 0, 0.01f, handScrewPaint);
-			canvas.restore();
-		}
+		float handAngle = mins * 24;
+		canvas.save(Canvas.MATRIX_SAVE_FLAG);
+		canvas.translate(0.5f, 0.33f);
+		canvas.rotate(handAngle);
+		canvas.drawPath(smallHandPath, handPaint);
+		
+		canvas.drawCircle(0, 0, 0.01f, handScrewPaint);
+		canvas.restore();
 	}
 
 	private void drawBackground(Canvas canvas) {
@@ -483,13 +517,15 @@ public final class StopWatch extends View {
 		canvas.save(Canvas.MATRIX_SAVE_FLAG);
 		canvas.scale(scale, scale);
 
-		drawHand(canvas);
 		drawSmallHand(canvas);
+		drawHand(canvas);
 		
 		canvas.restore();
-	
-		if (handNeedsToMove()) {
-			moveHand();
+		
+		if (running) {
+			float timediff = 0.001f * (System.currentTimeMillis() - starttime);
+			setTime(timediff);
+			invalidate();
 		}
 	}
 
@@ -517,53 +553,7 @@ public final class StopWatch extends View {
 		drawNumbers(backgroundCanvas);
 		drawSmallDial(backgroundCanvas);
 		drawSmallNumbers(backgroundCanvas);
-		drawTitle(backgroundCanvas);		
-	}
-
-	private boolean handNeedsToMove() {
-		return Math.abs(handPosition - handTarget) > 0.01f;
-	}
-	
-	private void moveHand() {
-		if (! handNeedsToMove()) {
-			return;
-		}
-		
-		if (lastHandMoveTime != -1L) {
-			long currentTime = System.currentTimeMillis();
-			float delta = (currentTime - lastHandMoveTime) / 1000.0f;
-
-			float direction = Math.signum(handVelocity);
-			if (Math.abs(handVelocity) < 90.0f) {
-				handAcceleration = 5.0f * (handTarget - handPosition);
-			} else {
-				handAcceleration = 0.0f;
-			}
-			handPosition += handVelocity * delta;
-			handVelocity += handAcceleration * delta;
-			if ((handTarget - handPosition) * direction < 0.01f * direction) {
-				handPosition = handTarget;
-				handVelocity = 0.0f;
-				handAcceleration = 0.0f;
-				lastHandMoveTime = -1L;
-			} else {
-				lastHandMoveTime = System.currentTimeMillis();				
-			}
-			invalidate();
-		} else {
-			lastHandMoveTime = System.currentTimeMillis();
-			moveHand();
-		}
-	}
-	
-	private void setHandTarget(float temperature) {
-		if (temperature < minDegrees) {
-			temperature = minDegrees;
-		} else if (temperature > maxDegrees) {
-			temperature = maxDegrees;
-		}
-		handTarget = temperature;
-		handInitialized = true;
-		invalidate();
+		drawTitle(backgroundCanvas);	
+		drawLogo(backgroundCanvas);
 	}
 }
