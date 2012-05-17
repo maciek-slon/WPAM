@@ -13,9 +13,9 @@ public class WelcomeActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.stopwatch);
+        setContentView(R.layout.welcome);
 
-        /*Button next = (Button) findViewById(R.id.btnIntervals);
+        Button next = (Button) findViewById(R.id.btnIntervals);
         next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
             	MediaPlayer mp = MediaPlayer.create(getBaseContext(), R.raw.beep);
@@ -31,6 +31,24 @@ public class WelcomeActivity extends Activity {
                 startActivityForResult(myIntent, 0);
             }
 
-        });*/
+        });
+        
+        Button stopwatch = (Button) findViewById(R.id.btnStopwatch);
+        stopwatch.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+            	MediaPlayer mp = MediaPlayer.create(getBaseContext(), R.raw.beep);
+                mp.start();
+                mp.setOnCompletionListener(new OnCompletionListener() {
+ 
+                    public void onCompletion(MediaPlayer mp) {
+                        mp.release();
+                    }
+                });
+                
+                Intent myIntent = new Intent(view.getContext(), StopwatchActivity.class);
+                startActivityForResult(myIntent, 0);
+            }
+
+        });
     }
 }

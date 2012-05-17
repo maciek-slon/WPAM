@@ -8,8 +8,28 @@
 	<edu.wut.wpam.widgets.StopWatch
 	    android:id="@+id/stopWatch"
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
-	    
-	</edu.wut.wpam.widgets.StopWatch>
+		android:layout_height="fill_parent" />
+	
+	
+	<!-- <edu.wut.wpam.widgets.Plot
+	    xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:id="@+id/simplePlot"
+	    android:layout_width="fill_parent"
+	    android:layout_height="66dp" />-->
+	
+	<Button
+        android:id="@+id/btnSwStop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Stop"
+        android:textSize="20dp" />
+	
+	<Button
+        android:id="@+id/btnSwRestart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Restart"
+        android:textSize="20dp" />
+	
 
 </LinearLayout>

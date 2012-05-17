@@ -86,6 +86,7 @@ public class Plot extends View {
 		marker = Float.NaN;
 		
 		elems = new ArrayList<PointF>();
+		/*
 		add(new PointF(0, 1));
 		add(new PointF(21, 2));
 		add(new PointF(43, 4));
@@ -93,17 +94,17 @@ public class Plot extends View {
 		add(new PointF(86, 4));
 		add(new PointF(107, 3));
 		add(new PointF(130, 3));
-		add(new PointF(175, 7));
+		add(new PointF(175, 7));*/
 		
 		intervals = new ArrayList<Float>();
-		intervals.add(new Float(2));
+		/*intervals.add(new Float(2));
 		intervals.add(new Float(4));
 		intervals.add(new Float(2));
 		intervals.add(new Float(4));
 		intervals.add(new Float(2));
-		intervals.add(new Float(4));
+		intervals.add(new Float(4));*/
 		
-		setMarker(15);
+		//setMarker(15);
 	}	
 	
 	public void setIntervals(ArrayList<Float> i) {

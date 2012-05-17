@@ -16,7 +16,6 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.text.format.Time;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -74,7 +73,6 @@ public final class StopWatch extends View {
 	private float mins;
 	private float secs;
 	private long starttime;
-	private long curtime;
 	
 	
 	public StopWatch(Context context) {
@@ -134,14 +132,24 @@ public final class StopWatch extends View {
 	private void init() {
 		initDrawingTools();
 		
+		running = false;
+		starttime = System.currentTimeMillis();
+	}
+	
+	public void restart() {
 		running = true;
+		starttime = System.currentTimeMillis();
+		invalidate();
+	}
+	
+	public void stop() {
+		running = false;
 		starttime = System.currentTimeMillis();
 	}
 
 	private void setTime(float s) {
 		mins = s / 60;
-		secs = s % 60;
-		
+		secs = s % 60;	
 	}
 
 	private String getTitle() {
