@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".IntervalPickerActivity\"></activity>
-        <activity android:name=".RunWithMeActivity"></activity>
+        <activity android:name=".MonitorActivity"></activity>
         <activity android:name=".StopwatchActivity\"></activity>
     </application>
 

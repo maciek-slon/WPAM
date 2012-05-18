@@ -16,7 +16,7 @@ public class IntervalPickerActivity extends Activity {
         Button next = (Button) findViewById(R.id.btnGo);
         next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {                
-                Intent myIntent = new Intent(view.getContext(), RunWithMeActivity.class);
+                Intent myIntent = new Intent(view.getContext(), MonitorActivity.class);
                 startActivityForResult(myIntent, 0);
             }
 
