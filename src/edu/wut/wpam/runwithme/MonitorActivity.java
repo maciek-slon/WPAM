@@ -1,6 +1,5 @@
 package edu.wut.wpam.runwithme;
 
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,7 +12,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.format.Time;
-import android.util.Log;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -126,54 +124,45 @@ public class MonitorActivity extends TabActivity {
 	/* Class My Location Listener */
 	public class MyLocationListener implements LocationListener
 	{
-		private static final String TAG = "MyLocationListener";
 		Location last;
 		long starttime;
 		
 		public void onLocationChanged(Location loc)
 		{
 			float dist = 0;
-			int time = 0;
 			float spd = 0;
+			float dt;
 			
-			if (last != null) {
+			long tm = System.currentTimeMillis();
+			
+			if (last == null) {
+				last = loc;
+				starttime = tm;
+			} else if (tm - starttime > 5000) {
+				dt = 0.001f * (tm - starttime);
 				dist = last.distanceTo(loc);
-				time = (int) (loc.getTime() - last.getTime());
-				spd = dist / time * 3.6f;
-			} else {
-				starttime = loc.getTime();
+				spd = 3.6f * dist / dt;
+				starttime = tm;
+				last = loc;
+				String Text = "" + dist + "m/" + dt + "s = " + spd + "km/h";
+				TextView tv = (TextView)findViewById(R.id.textview3);
+				tv.setText(Text);
+								
+				Plot plot = (Plot) findViewById(R.id.simplePlot);
+				plot.add(new PointF(dt, spd));
+				plot.invalidate();
 			}
-			last = loc;
 
-			String Text = "" + dist + "m/" + time * 0.001 + "s = " + spd + "km/h";
-			Text += " : " + loc.getSpeed();
-//			Toast.makeText(getApplicationContext(),	Text, Toast.LENGTH_SHORT).show();
-			
-			TextView tv = (TextView)findViewById(R.id.textview3);
-			tv.setText(Text);
-			
-			Log.i(TAG, "onLocationChanged()");
-			Date theTimeStamp = new Date(loc.getTime());
-			Log.i(TAG, "Current  TimeStamp: " + new Date().toString());
-			Log.i(TAG, "Location TimeStamp: " + theTimeStamp.toString());
-			
-			Plot plot = (Plot) findViewById(R.id.simplePlot);
-			plot.add(new PointF((float)(loc.getTime() - starttime)/1000.0f, spd));
-			plot.invalidate();
 		}
 		
 		public void onProviderDisabled(String provider)
 		{
-			Toast.makeText(getApplicationContext(),
-			"Gps Disabled",
-			Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(),"Gps Disabled", Toast.LENGTH_SHORT).show();
 		}
 		
 		public void onProviderEnabled(String provider)
 		{
-			Toast.makeText(getApplicationContext(),
-			"Gps Enabled",
-			Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
 		}
 		
 		public void onStatusChanged(String provider, int status, Bundle extras)

@@ -4,14 +4,10 @@ import edu.wut.wpam.widgets.Plot;
 import edu.wut.wpam.widgets.StopWatch;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.PointF;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -28,13 +24,10 @@ public class StopwatchActivity extends Activity implements SensorEventListener {
 
 	private SensorManager mSensorManager;
 	private Sensor mAccelerometer;
-	private final float NOISE = (float) 2.0;
 	private float ax, ay, az;
 	
 	// is accelerometer initialized
 	private boolean mInitialized;
-
-	private int cnt = 0;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -100,9 +93,6 @@ public class StopwatchActivity extends Activity implements SensorEventListener {
 			ay = y;
 			az = z;
 			float len = Math.abs(dx*dx+dy*dy+dz*dz);
-			cnt++;
-			//plot.add(new PointF(cnt, len));
-			//plot.invalidate();
 			if (len > 200)
 				sw.stop();
 		}
