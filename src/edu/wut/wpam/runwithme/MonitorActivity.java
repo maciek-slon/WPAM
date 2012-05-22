@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MonitorActivity extends TabActivity {
@@ -79,6 +80,10 @@ public class MonitorActivity extends TabActivity {
 		Plot plot = (Plot) findViewById(R.id.simplePlot);
 		plot.setXEnd(workout.getLength());
 		plot.setIntervals(workout.getIntervals());
+		
+		
+		TextView tv = (TextView)findViewById(R.id.textview3);
+		tv.setText("READY!");
 	}
 	
 	@Override
@@ -141,7 +146,11 @@ public class MonitorActivity extends TabActivity {
 			last = loc;
 
 			String Text = "" + dist + "m/" + time * 0.001 + "s = " + spd + "km/h";
-			Toast.makeText(getApplicationContext(),	Text, Toast.LENGTH_SHORT).show();
+			Text += " : " + loc.getSpeed();
+//			Toast.makeText(getApplicationContext(),	Text, Toast.LENGTH_SHORT).show();
+			
+			TextView tv = (TextView)findViewById(R.id.textview3);
+			tv.setText(Text);
 			
 			Log.i(TAG, "onLocationChanged()");
 			Date theTimeStamp = new Date(loc.getTime());
