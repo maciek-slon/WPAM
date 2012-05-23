@@ -50,5 +50,14 @@ public class WelcomeActivity extends Activity {
             }
 
         });
+        Button map = (Button) findViewById(R.id.btnMap);
+        map.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                            
+                Intent myIntent = new Intent(view.getContext(), RouteActivity.class);
+                startActivityForResult(myIntent, 0);
+            }
+
+        });
     }
 }
