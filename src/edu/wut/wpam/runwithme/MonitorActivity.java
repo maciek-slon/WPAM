@@ -33,8 +33,9 @@ public class MonitorActivity extends TabActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
 
+		loadBundle(savedInstanceState);
+		
 		// ---------------------------------------------
 		// Setup tabs
 		// ---------------------------------------------
@@ -106,6 +107,38 @@ public class MonitorActivity extends TabActivity {
 		super.onDestroy();
 	}
 	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+	  // Save UI state changes to the savedInstanceState.
+	  // This bundle will be passed to onCreate if the process is
+	  // killed and restarted.
+	  saveBundle(savedInstanceState);
+	  super.onSaveInstanceState(savedInstanceState);
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+	  super.onRestoreInstanceState(savedInstanceState);
+	  // Restore UI state from the savedInstanceState.
+	  // This bundle has also been passed to onCreate.
+	  loadBundle(savedInstanceState);
+	}
+	
+	private void saveBundle(Bundle bundle) {
+		bundle.putBoolean("MyBoolean", true);
+		bundle.putDouble("myDouble", 1.9);
+		bundle.putInt("MyInt", 1);
+		bundle.putString("MyString", "Welcome back to Android");
+	}
+	
+	private void loadBundle(Bundle bundle) {
+		boolean myBoolean = bundle.getBoolean("MyBoolean");
+		double myDouble = bundle.getDouble("myDouble");
+		int myInt = bundle.getInt("MyInt");
+		String myString = bundle.getString("MyString");
+	}
+	
+	
 	private void TimerMethod()
 	{
 		//This method is called directly by the timer
@@ -125,9 +158,6 @@ public class MonitorActivity extends TabActivity {
 			plot.invalidate();
 		}
 	};
-	
-	
-	
 	
 	
 	/* Class My Location Listener */
@@ -158,12 +188,12 @@ public class MonitorActivity extends TabActivity {
 				tv.setText(Text);
  
 				Plot plot = (Plot) findViewById(R.id.simplePlot);
-				plot.add(new PointF(dt, spd));
+				plot.add(new PointF(workout.getTime(), spd));
 				plot.invalidate();
 				
 				context.addTrackPoint(new TrackPoint((int)(loc.getLatitude()*1e6), (int)(loc.getLongitude()*1e6), (int)(loc.getAltitude()), tm));
 				
-				Toast.makeText(getApplicationContext(),Text, Toast.LENGTH_SHORT).show();
+				//Toast.makeText(getApplicationContext(),Text, Toast.LENGTH_SHORT).show();
 			}
 
 		}
