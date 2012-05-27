@@ -52,8 +52,8 @@ public class RouteActivity extends MapActivity {
 	        mPaint.setStrokeCap(Paint.Cap.ROUND);
 	        mPaint.setStrokeWidth(2);
 
-	        GeoPoint gP1 = new GeoPoint(19240000,-99120000);
-	        GeoPoint gP2 = new GeoPoint(37423157, -122085008);
+	        GeoPoint gP1 = new GeoPoint(52000000, 21000000);
+	        GeoPoint gP2 = new GeoPoint(51000000, 22000000);
 
 	        Point p1 = new Point();
 	        Point p2 = new Point();
