@@ -18,23 +18,36 @@ import com.google.android.maps.Projection;
 public class RouteActivity extends MapActivity {
 	private List<Overlay> mapOverlays;
 
-	private Projection projection;  
+	private Projection projection;
+	private RunAppContext context = RunAppContext.instance();
+	private MapView mapView;
 	
 	@Override
 	protected boolean isRouteDisplayed() {
 	    return false;
 	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.map);
-		MapView mapView = (MapView) findViewById(R.id.mapview);
+	    
+		mapView = (MapView) findViewById(R.id.mapview);
 	    mapView.setBuiltInZoomControls(true);
 	    
 	    mapOverlays = mapView.getOverlays();        
 	    projection = mapView.getProjection();
 	    mapOverlays.add(new MyOverlay());
+	    
+	    context.addListener(mapView);
 	}
+	
+	public void onDestroy() {
+		context.removeListener(mapView);
+		
+		super.onDestroy();
+	}
+	
 	class MyOverlay extends Overlay{
 
 	    public MyOverlay(){
@@ -44,26 +57,30 @@ public class RouteActivity extends MapActivity {
 	    public void draw(Canvas canvas, MapView mapv, boolean shadow){
 	        super.draw(canvas, mapv, shadow);
 
-	        Paint   mPaint = new Paint();
+	        Paint mPaint = new Paint();
 	        mPaint.setDither(true);
 	        mPaint.setColor(Color.RED);
-	        mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+	        mPaint.setStyle(Paint.Style.STROKE);
 	        mPaint.setStrokeJoin(Paint.Join.ROUND);
 	        mPaint.setStrokeCap(Paint.Cap.ROUND);
-	        mPaint.setStrokeWidth(2);
+	        mPaint.setStrokeWidth(3);
 
-	        GeoPoint gP1 = new GeoPoint(52000000, 21000000);
-	        GeoPoint gP2 = new GeoPoint(51000000, 22000000);
-
-	        Point p1 = new Point();
-	        Point p2 = new Point();
 	        Path path = new Path();
+	        
+	        if (context.track == null || context.track.size() == 0) {
+	        	return;
+	        }
+	        
+	        for (int i = 0; i < context.track.size(); ++i) {
+	        	GeoPoint gP1 = new GeoPoint(context.track.get(i).lat, context.track.get(i).lon);
+		        Point p1 = new Point();
+		        projection.toPixels(gP1, p1);
 
-	        projection.toPixels(gP1, p1);
-	        projection.toPixels(gP2, p2);
-
-	        path.moveTo(p2.x, p2.y);
-	        path.lineTo(p1.x,p1.y);
+		        if (i == 0)
+		        	path.moveTo(p1.x, p1.y);
+		        else
+		        	path.lineTo(p1.x,p1.y);
+	        }
 
 	        canvas.drawPath(path, mPaint);
 	    }

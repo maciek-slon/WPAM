@@ -9,8 +9,8 @@ public class IntervalWorkout {
 	private ArrayList<Float> intervals;
 	int day;
 	float workoutLength;
-	int totalTime;
-	Time startTime;
+	float totalTime;
+	long startTime;
 	
 	// defines intervals (in seconds) for this type of workout
 	// from left: days, repeats, run, walk 
@@ -67,15 +67,15 @@ public class IntervalWorkout {
 		return intervals;
 	}
 	
-	public void incrementTime(Time tm) {
-		totalTime = (int) (0.001 * (tm.toMillis(false) - startTime.toMillis(false)));
+	public void update(long tm) {
+		totalTime = 0.001f * (tm - startTime);
 	}
 	
-	public int getTime() {
+	public float getTime() {
 		return totalTime;
 	}
 
 	public void setStart(Time now) {
-		startTime = now;
+		startTime = System.currentTimeMillis();
 	}
 }

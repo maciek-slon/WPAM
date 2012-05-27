@@ -6,12 +6,15 @@ import java.util.TimerTask;
 import edu.wut.wpam.widgets.Plot;
 import android.app.TabActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.format.Time;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +26,8 @@ public class MonitorActivity extends TabActivity {
 	IntervalWorkout workout = new IntervalWorkout();
 	MyLocationListener myLocationListener;
 
+	private RunAppContext context = RunAppContext.instance(); 
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -82,6 +87,16 @@ public class MonitorActivity extends TabActivity {
 		
 		TextView tv = (TextView)findViewById(R.id.textview3);
 		tv.setText("READY!");
+		
+		
+		Button map = (Button) findViewById(R.id.btnShowMap);
+        map.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent myIntent = new Intent(view.getContext(), RouteActivity.class);
+                startActivityForResult(myIntent, 0);
+            }
+
+        });
 	}
 	
 	@Override
@@ -90,10 +105,6 @@ public class MonitorActivity extends TabActivity {
 		mlocManager.removeUpdates(myLocationListener);
 		super.onDestroy();
 	}
-	
-	
-	
-	
 	
 	private void TimerMethod()
 	{
@@ -107,10 +118,8 @@ public class MonitorActivity extends TabActivity {
 
 	private Runnable Timer_Tick = new Runnable() {
 		public void run() {
-		//This method runs in the same thread as the UI.  
-			Time now = new Time();
-			now.setToNow();  	       
-			workout.incrementTime(now);
+		//This method runs in the same thread as the UI.
+			workout.update(System.currentTimeMillis());
 			Plot plot = (Plot) findViewById(R.id.simplePlot);
 			plot.setMarker(workout.getTime());
 			plot.invalidate();
@@ -132,9 +141,9 @@ public class MonitorActivity extends TabActivity {
 			float dist = 0;
 			float spd = 0;
 			float dt;
-			
+
 			long tm = System.currentTimeMillis();
-			
+
 			if (last == null) {
 				last = loc;
 				starttime = tm;
@@ -147,10 +156,14 @@ public class MonitorActivity extends TabActivity {
 				String Text = "" + dist + "m/" + dt + "s = " + spd + "km/h";
 				TextView tv = (TextView)findViewById(R.id.textview3);
 				tv.setText(Text);
-								
+ 
 				Plot plot = (Plot) findViewById(R.id.simplePlot);
 				plot.add(new PointF(dt, spd));
 				plot.invalidate();
+				
+				context.addTrackPoint(new TrackPoint((int)(loc.getLatitude()*1e6), (int)(loc.getLongitude()*1e6), (int)(loc.getAltitude()), tm));
+				
+				Toast.makeText(getApplicationContext(),Text, Toast.LENGTH_SHORT).show();
 			}
 
 		}
