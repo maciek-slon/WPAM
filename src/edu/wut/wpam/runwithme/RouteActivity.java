@@ -11,6 +11,7 @@ import android.os.Bundle;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.Projection;
@@ -19,9 +20,18 @@ public class RouteActivity extends MapActivity {
 	private List<Overlay> mapOverlays;
 
 	private Projection projection;
+	private MapController myMapController;
 	private RunAppContext context = RunAppContext.instance();
 	private MapView mapView;
-	
+	private boolean auto_center;
+	public boolean isAuto_center() {
+		return auto_center;
+	}
+
+	public void setAuto_center(boolean auto_center) {
+		this.auto_center = auto_center;
+	}
+
 	@Override
 	protected boolean isRouteDisplayed() {
 	    return false;
@@ -38,7 +48,9 @@ public class RouteActivity extends MapActivity {
 	    mapOverlays = mapView.getOverlays();        
 	    projection = mapView.getProjection();
 	    mapOverlays.add(new MyOverlay());
-	    
+	    myMapController = mapView.getController();
+	    myMapController.setZoom(17); //Fixed Zoom Level
+	    myMapController.setCenter(new GeoPoint(52000000, 21000000));
 	    context.addListener(mapView);
 	}
 	
@@ -70,17 +82,35 @@ public class RouteActivity extends MapActivity {
 	        if (context.track == null || context.track.size() == 0) {
 	        	return;
 	        }
+	        int min_lat=0, min_lon=0, max_lat=0, max_lon =0;
 	        
 	        for (int i = 0; i < context.track.size(); ++i) {
-	        	GeoPoint gP1 = new GeoPoint(context.track.get(i).lat, context.track.get(i).lon);
+	        	int lat = context.track.get(i).lat;
+	        	int lon = context.track.get(i).lon;
+	        	GeoPoint gP1 = new GeoPoint(lat, lon);
 		        Point p1 = new Point();
 		        projection.toPixels(gP1, p1);
 
-		        if (i == 0)
+		        if (i == 0){
 		        	path.moveTo(p1.x, p1.y);
-		        else
+		        	min_lat=max_lat=lat;
+		        	min_lon=max_lat=lon;
+		        }	
+		        else {
 		        	path.lineTo(p1.x,p1.y);
-	        }
+		        	if (lat<min_lat)
+		        		min_lat=lat;
+		        	if (lon<min_lon)
+		        		min_lon=lon;
+		        	if(lon>max_lon)
+		        		max_lon=lon;
+		        	if(lat>max_lat)
+		        		max_lat=lat;
+		        }	
+		    }
+	        int mean_lat=(min_lat+max_lat)/2;
+	        int mean_lon=(min_lon+max_lon)/2;
+	        myMapController.setCenter(new GeoPoint(mean_lat, mean_lon));
 
 	        canvas.drawPath(path, mPaint);
 	    }
