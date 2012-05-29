@@ -125,17 +125,17 @@ public class MonitorActivity extends TabActivity {
 	}
 	
 	private void saveBundle(Bundle bundle) {
-		bundle.putBoolean("MyBoolean", true);
-		bundle.putDouble("myDouble", 1.9);
-		bundle.putInt("MyInt", 1);
-		bundle.putString("MyString", "Welcome back to Android");
+//		bundle.putBoolean("MyBoolean", true);
+//		bundle.putDouble("myDouble", 1.9);
+//		bundle.putInt("MyInt", 1);
+//		bundle.putString("MyString", "Welcome back to Android");
 	}
 	
 	private void loadBundle(Bundle bundle) {
-		boolean myBoolean = bundle.getBoolean("MyBoolean");
-		double myDouble = bundle.getDouble("myDouble");
-		int myInt = bundle.getInt("MyInt");
-		String myString = bundle.getString("MyString");
+//		boolean myBoolean = bundle.getBoolean("MyBoolean");
+//		double myDouble = bundle.getDouble("myDouble");
+//		int myInt = bundle.getInt("MyInt");
+//		String myString = bundle.getString("MyString");
 	}
 	
 	

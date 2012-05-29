@@ -20,7 +20,11 @@ public class IntervalPickerActivity extends Activity {
 
         
         array_spinner=new String[5];
-        array_spinner[0]="Od zera do bohatera";
+        array_spinner[0]="Od zera do bohatera 1";
+        array_spinner[1]="Od zera do bohatera 2";
+        array_spinner[2]="Od zera do bohatera 3";
+        array_spinner[3]="Od zera do bohatera 4";
+        array_spinner[4]="Od zera do bohatera 5";
         Spinner s = (Spinner) findViewById(R.id.cbIntervalType);
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, array_spinner);
         s.setAdapter(adapter);
