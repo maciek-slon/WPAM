@@ -34,6 +34,7 @@
         android:id="@+id/btnMap"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mapa" />
+        android:text="Rozpocznij bieg"
+        android:textSize="20dp" android:drawableLeft="@drawable/ic_run"/>
 
 </LinearLayout>

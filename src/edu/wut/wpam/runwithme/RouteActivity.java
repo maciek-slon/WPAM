@@ -80,6 +80,14 @@ public class RouteActivity extends MapActivity {
 			mPaint.setStrokeJoin(Paint.Join.ROUND);
 			mPaint.setStrokeCap(Paint.Cap.ROUND);
 			mPaint.setStrokeWidth(3);
+			
+			Paint tPaint = new Paint();
+			tPaint.setDither(true);
+			tPaint.setColor(Color.BLACK);
+			tPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+			tPaint.setStrokeJoin(Paint.Join.ROUND);
+			tPaint.setStrokeCap(Paint.Cap.ROUND);
+			tPaint.setStrokeWidth(2);
 
 			Path path = new Path();
 
@@ -118,6 +126,10 @@ public class RouteActivity extends MapActivity {
 			}
 
 			canvas.drawPath(path, mPaint);
+			
+			canvas.drawLine(0,0,1000000000,-1000000000,tPaint);
+			
+			canvas.drawText("test", 10, 10, tPaint);
 		}
 	}
 
