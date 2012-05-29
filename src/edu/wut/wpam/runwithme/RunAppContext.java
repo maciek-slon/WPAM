@@ -35,6 +35,8 @@ public class RunAppContext {
 	}
 	
 	public ArrayList<TrackPoint> track;
+
+	private float speed;
 	
 	public void addTrackPoint(TrackPoint pt) {
 		track.add(pt);
@@ -61,6 +63,18 @@ public class RunAppContext {
 		FileOutputStream fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
 		fos.write(data.getBytes());
 		fos.close();
+	}
+	
+	public float getSpeed() {
+		return speed;
+	}
+	
+	public void setSpeed(float sp) {
+		speed = sp;
+	}
+	
+	public float getTime() {
+		return 0.001f * (System.currentTimeMillis() - timestamp);
 	}
 	
 }
