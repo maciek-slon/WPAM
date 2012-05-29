@@ -88,7 +88,32 @@ public class RouteActivity extends MapActivity {
 			tPaint.setStrokeJoin(Paint.Join.ROUND);
 			tPaint.setStrokeCap(Paint.Cap.ROUND);
 			tPaint.setStrokeWidth(2);
+			tPaint.setTextSize(50);
 
+			String speed = String.valueOf(context.getSpeed()) + " km/h";
+			float dist = context.getDistance()/1000;
+			String time = String.valueOf(context.getTime());
+			float seconds = context.getTime();
+			int hour = (int) Math.floor(seconds/3600);
+			seconds=seconds-hour*3600;
+			int minutes = (int) Math.floor(seconds/60);
+			seconds=seconds-minutes*60;
+			int sec = (int) Math.floor(seconds);
+			
+			String distance = String.format("%.2f",dist) + " km";
+			
+			
+			String disHour = (hour < 10 ? "0" : "") + hour,
+			disMinu = (minutes < 10 ? "0" : "") + minutes ,
+			disSec = (sec < 10 ? "0" : "") + sec ;
+			
+			time = "" + disHour +":" + disMinu + ":" + disSec;
+			
+			canvas.drawText(speed, 20, 70, tPaint);
+			canvas.drawText(time,20,130, tPaint);
+			canvas.drawText(distance ,20,190, tPaint);
+			
+			
 			Path path = new Path();
 
 			if (context.track == null || context.track.size() == 0) {
@@ -125,11 +150,7 @@ public class RouteActivity extends MapActivity {
 				myMapController.setCenter(new GeoPoint(mean_lat, mean_lon));
 			}
 
-			canvas.drawPath(path, mPaint);
-			
-			canvas.drawLine(0,0,1000000000,-1000000000,tPaint);
-			
-			canvas.drawText("test", 10, 10, tPaint);
+			canvas.drawPath(path, mPaint);			
 		}
 	}
 
