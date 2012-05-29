@@ -5,8 +5,10 @@ import java.util.List;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Bundle;
 
 import com.google.android.maps.GeoPoint;
@@ -83,12 +85,17 @@ public class RouteActivity extends MapActivity {
 			
 			Paint tPaint = new Paint();
 			tPaint.setDither(true);
-			tPaint.setColor(Color.BLACK);
+			tPaint.setColor(Color.WHITE);
 			tPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 			tPaint.setStrokeJoin(Paint.Join.ROUND);
 			tPaint.setStrokeCap(Paint.Cap.ROUND);
 			tPaint.setStrokeWidth(2);
-			tPaint.setTextSize(50);
+			tPaint.setTextSize(40);
+			
+			Paint rPaint = new Paint();
+			rPaint.setColor(Color.BLACK);
+			rPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+			rPaint.setAlpha(80);
 
 			String speed = String.valueOf(context.getSpeed()) + " km/h";
 			float dist = context.getDistance()/1000;
@@ -109,9 +116,11 @@ public class RouteActivity extends MapActivity {
 			
 			time = "" + disHour +":" + disMinu + ":" + disSec;
 			
-			canvas.drawText(speed, 20, 70, tPaint);
-			canvas.drawText(time,20,130, tPaint);
-			canvas.drawText(distance ,20,190, tPaint);
+			canvas.drawRect(new Rect (0,0, mapView.getWidth(), 140), rPaint);
+			canvas.drawText(speed, 20, 60, tPaint);
+			canvas.drawText(time,20,120, tPaint);
+			tPaint.setTextAlign(Align.RIGHT);
+			canvas.drawText(distance, mapView.getWidth()-20, 60, tPaint);
 			
 			
 			Path path = new Path();
