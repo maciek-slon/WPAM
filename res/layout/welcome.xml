@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:text="Rozpocznij bieg"
         android:textSize="20dp" 
-        android:drawableLeft="@drawable/ic_run"/>
+        android:drawableLeft="@drawable/ic_runner"/>
 
     <Button
         android:id="@+id/btnStopwatch"
@@ -37,13 +37,5 @@
         android:drawableLeft="@drawable/ic_distance"
         android:text="@string/welcome_stopwatch"
         android:textSize="20dp" />
-
-    <Button
-        android:id="@+id/btnMap"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Pokaż mapę"
-        android:textSize="20dp" 
-        android:drawableLeft="@drawable/ic_run"/>
 
 </LinearLayout>
