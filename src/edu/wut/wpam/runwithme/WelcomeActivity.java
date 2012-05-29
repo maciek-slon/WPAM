@@ -59,5 +59,15 @@ public class WelcomeActivity extends Activity {
             }
 
         });
+        
+        Button run = (Button) findViewById(R.id.btnRun);
+        run.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                            
+                Intent myIntent = new Intent(view.getContext(), MonitorActivity.class);
+                startActivityForResult(myIntent, 0);
+            }
+
+        });
     }
 }

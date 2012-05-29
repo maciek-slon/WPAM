@@ -1,6 +1,5 @@
 package edu.wut.wpam.runwithme;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,10 +16,15 @@ public class RunAppContext {
 	private long timestamp = 0;
 
 	private Context context;
-
+	
+	private ArrayList<Workout> workouts;
+	
 	private RunAppContext() {
 		track = new ArrayList<TrackPoint>(30);
+		workouts = new ArrayList<Workout>();
 		timestamp = System.currentTimeMillis();
+		distance = 0;
+		speed = 0;
 	}
 
 	public static RunAppContext instance() {
@@ -37,6 +41,8 @@ public class RunAppContext {
 	public ArrayList<TrackPoint> track;
 
 	private float speed;
+
+	private float distance;
 	
 	public void addTrackPoint(TrackPoint pt) {
 		track.add(pt);
@@ -73,8 +79,20 @@ public class RunAppContext {
 		speed = sp;
 	}
 	
+	public float getDistance() {
+		return distance;
+	}
+	
+	public void addDistance(float dd) {
+		distance += dd;
+	}
+	
+	
 	public float getTime() {
 		return 0.001f * (System.currentTimeMillis() - timestamp);
 	}
 	
+	public Workout getActiveWorkout() {
+		return null;
+	}
 }
