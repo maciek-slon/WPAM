@@ -8,5 +8,7 @@
     <string name="welcome_distances">Dystansy</string>
     <string name="welcome_stopwatch">Stoper</string>
     <string name="intervals_speed">Szybkość</string>
+    <string name="workout_prompt">Wybierz trening</string>
+    <string name="welcome_logbook">Zapisane treningi</string>
 
 </resources>

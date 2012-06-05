@@ -26,7 +26,8 @@
         <Spinner
             android:id="@+id/cbIntervalType"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:layout_weight="1"/>
+            android:layout_height="wrap_content" android:layout_weight="1"
+            android:prompt="@string/workout_prompt"/>
 
         <Button
             android:id="@+id/button4"

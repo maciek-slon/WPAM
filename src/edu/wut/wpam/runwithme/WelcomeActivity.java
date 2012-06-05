@@ -60,5 +60,15 @@ public class WelcomeActivity extends Activity {
             }
 
         });
+        
+        Button db = (Button) findViewById(R.id.btnDatabase);
+        db.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                            
+                Intent myIntent = new Intent(view.getContext(), TestDatabaseActivity.class);
+                startActivityForResult(myIntent, 0);
+            }
+
+        });
     }
 }

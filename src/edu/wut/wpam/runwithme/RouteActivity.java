@@ -84,7 +84,7 @@ public class RouteActivity extends MapActivity {
 			mPaint.setStrokeWidth(3);
 			
 			Paint tPaint = new Paint();
-			tPaint.setDither(true);
+			tPaint.setAntiAlias(true);
 			tPaint.setColor(Color.WHITE);
 			tPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 			tPaint.setStrokeJoin(Paint.Join.ROUND);
