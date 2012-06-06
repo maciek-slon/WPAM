@@ -4,28 +4,26 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import android.R.bool;
 import android.app.Application;
 import android.content.Context;
 import android.view.View;
 
 public class RunAppContext {
 	private static RunAppContext runAppContext = null;
+
+	private ActivityDataSource datasource;
+	
+	private boolean is_initialized = false;
 	
 	private static ArrayList<View> listeners = new ArrayList<View>();
 	
-	private long timestamp = 0;
-
 	private Context context;
-	
-	private ArrayList<Workout> workouts;
+
+	private RunActivity runActivity;
 	
 	private RunAppContext() {
-		track = new ArrayList<TrackPoint>(30);
-		workouts = new ArrayList<Workout>();
-		timestamp = System.currentTimeMillis();
-		distance = 0;
-		speed = 0;
-	}
+	} 
 
 	public static RunAppContext instance() {
 		if (runAppContext == null) { 
@@ -36,16 +34,44 @@ public class RunAppContext {
 	
 	public void setContext(Context ctx) {
 		context = ctx;
+		datasource = new ActivityDataSource(context);
 	}
 	
-	public ArrayList<TrackPoint> track;
-
+	public void init() {
+		datasource.open();
+		runActivity = datasource.createRunActivity(System.currentTimeMillis(), 0);
+		distance = 0;
+		speed = 0;
+		is_initialized = true;
+		datasource.close();
+	}
+	
+	public void finish() {
+		if (is_initialized) {
+			// save everything to file
+			datasource.open();
+			runActivity.setSummary(11);
+			datasource.updateActivity(runActivity);
+			datasource.close();
+		}
+		
+		is_initialized = false;
+		context = null;
+		runActivity = null;
+		listeners = null;
+		runAppContext = null;
+	}
+	
+	public boolean initialized() {
+		return this.is_initialized;
+	}
+	
 	private float speed;
 
 	private float distance;
 	
 	public void addTrackPoint(TrackPoint pt) {
-		track.add(pt);
+		//track.add(pt);
 		notifyUI();
 	}
 	
@@ -64,11 +90,11 @@ public class RunAppContext {
 	}
 	
 	public void save() throws IOException {
-		String FILENAME = String.valueOf(timestamp);
-		String data = "";
-		FileOutputStream fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
-		fos.write(data.getBytes());
-		fos.close();
+		//String FILENAME = String.valueOf(timestamp);
+		//String data = "";
+		//FileOutputStream fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
+		//fos.write(data.getBytes());
+		//fos.close();
 	}
 	
 	public float getSpeed() {
@@ -89,10 +115,16 @@ public class RunAppContext {
 	
 	
 	public float getTime() {
-		return 0.001f * (System.currentTimeMillis() - timestamp);
+		return 0.001f * (System.currentTimeMillis() - runActivity.getDate());
 	}
 	
 	public Workout getActiveWorkout() {
 		return null;
 	}
+	
+	public ArrayList<TrackPoint> getTrack() {
+		return runActivity.getTrack();
+	}
+	
+	
 }

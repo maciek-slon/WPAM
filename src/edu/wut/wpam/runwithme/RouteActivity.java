@@ -1,5 +1,6 @@
 package edu.wut.wpam.runwithme;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Canvas;
@@ -125,14 +126,15 @@ public class RouteActivity extends MapActivity {
 			
 			Path path = new Path();
 
-			if (context.track == null || context.track.size() == 0) {
+			ArrayList<TrackPoint> track = context.getTrack(); 
+			if (track == null || track.size() == 0) {
 				return;
 			}
 			int min_lat = 0, min_lon = 0, max_lat = 0, max_lon = 0;
 
-			for (int i = 0; i < context.track.size(); ++i) {
-				int lat = context.track.get(i).lat;
-				int lon = context.track.get(i).lon;
+			for (int i = 0; i < track.size(); ++i) {
+				int lat = track.get(i).lat;
+				int lon = track.get(i).lon;
 				GeoPoint gP1 = new GeoPoint(lat, lon);
 				Point p1 = new Point();
 				projection.toPixels(gP1, p1);

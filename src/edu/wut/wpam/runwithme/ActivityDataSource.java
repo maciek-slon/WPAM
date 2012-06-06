@@ -14,8 +14,10 @@ public class ActivityDataSource {
 	// Database fields
 	private SQLiteDatabase database;
 	private MySQLiteHelper dbHelper;
-	private String[] allColumns = { MySQLiteHelper.COLUMN_ID,
-			MySQLiteHelper.COLUMN_DATE, MySQLiteHelper.COLUMN_SUMMARY };
+	private String[] allColumns = { 
+			MySQLiteHelper.COLUMN_ID,
+			MySQLiteHelper.COLUMN_DATE, 
+			MySQLiteHelper.COLUMN_SUMMARY };
 
 	public ActivityDataSource(Context context) {
 		dbHelper = new MySQLiteHelper(context);
@@ -46,11 +48,19 @@ public class ActivityDataSource {
 	public void deleteActivity(RunActivity act) {
 		long id = act.getId();
 		//System.out.println("Comment deleted with id: " + id);
-		database.delete(MySQLiteHelper.TABLE_ACTIVITIES, MySQLiteHelper.COLUMN_ID
-				+ " = " + id, null);
+		database.delete(MySQLiteHelper.TABLE_ACTIVITIES, 
+				MySQLiteHelper.COLUMN_ID + " = " + id, null);
+	}
+	
+	public void updateActivity(RunActivity act) {
+		long id = act.getId();
+		ContentValues values = new ContentValues();
+		values.put(MySQLiteHelper.COLUMN_DATE, act.getDate());
+		values.put(MySQLiteHelper.COLUMN_SUMMARY, act.getSummary());
+		database.update(MySQLiteHelper.TABLE_ACTIVITIES, values, MySQLiteHelper.COLUMN_ID + " = " + id, null);
 	}
 
-	public List<RunActivity> getAllComments() {
+	public List<RunActivity> getAllActivities() {
 		List<RunActivity> acts = new ArrayList<RunActivity>();
 
 		Cursor cursor = database.query(MySQLiteHelper.TABLE_ACTIVITIES,

@@ -9,66 +9,34 @@ import android.view.View;
 import android.widget.Button;
 
 public class WelcomeActivity extends Activity {
-	/** Called when the activity is first created. */
+	
+	private void setButtonActivity(int id, final Class<?> cls) {
+		Button btn = (Button) findViewById(id);
+        btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {                
+                Intent myIntent = new Intent(view.getContext(), cls);
+                startActivityForResult(myIntent, 0);
+            }
+        });
+	}
+	
+	/** Called when the activity is first created. */	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome);
 
-        Button next = (Button) findViewById(R.id.btnIntervals);
-        next.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-            	MediaPlayer mp = MediaPlayer.create(getBaseContext(), R.raw.beep);
-                mp.start();
-                mp.setOnCompletionListener(new OnCompletionListener() {
- 
-                    public void onCompletion(MediaPlayer mp) {
-                        mp.release();
-                    }
-                });
-                
-                Intent myIntent = new Intent(view.getContext(), IntervalPickerActivity.class);
-                startActivityForResult(myIntent, 0);
-            }
-
-        });
+        setButtonActivity(R.id.btnIntervals, IntervalPickerActivity.class);
+        setButtonActivity(R.id.btnStopwatch, StopwatchActivity.class);
+        setButtonActivity(R.id.btnRun, MonitorActivity.class);
+        setButtonActivity(R.id.btnDatabase, TestDatabaseActivity.class);
         
-        Button stopwatch = (Button) findViewById(R.id.btnStopwatch);
-        stopwatch.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-            	MediaPlayer mp = MediaPlayer.create(getBaseContext(), R.raw.beep);
-                mp.start();
-                mp.setOnCompletionListener(new OnCompletionListener() {
- 
-                    public void onCompletion(MediaPlayer mp) {
-                        mp.release();
-                    }
-                });
-                
-                Intent myIntent = new Intent(view.getContext(), StopwatchActivity.class);
-                startActivityForResult(myIntent, 0);
-            }
-
-        });
-        
-        Button run = (Button) findViewById(R.id.btnRun);
-        run.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                            
-                Intent myIntent = new Intent(view.getContext(), MonitorActivity.class);
-                startActivityForResult(myIntent, 0);
-            }
-
-        });
-        
-        Button db = (Button) findViewById(R.id.btnDatabase);
-        db.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                            
-                Intent myIntent = new Intent(view.getContext(), TestDatabaseActivity.class);
-                startActivityForResult(myIntent, 0);
-            }
-
-        });
+        RunAppContext.instance().setContext(getApplicationContext());
+    }
+    
+    protected void onDestroy() {
+    	System.out.println("Destroy!");
+    	RunAppContext.instance().finish();
+    	super.onDestroy();
     }
 }

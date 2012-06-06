@@ -29,7 +29,7 @@ public class MonitorActivity extends TabActivity {
 	MyLocationListener myLocationListener;
 
 	private RunAppContext context = RunAppContext.instance();
-
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -38,6 +38,13 @@ public class MonitorActivity extends TabActivity {
 
 		loadBundle(savedInstanceState);
 
+		// ---------------------------------------------
+		// Setup context
+		// ---------------------------------------------
+		if (!context.initialized()) {
+			context.init();
+		}
+		
 		// ---------------------------------------------
 		// Setup tabs
 		// ---------------------------------------------
