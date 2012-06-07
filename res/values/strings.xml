@@ -11,4 +11,8 @@
     <string name="workout_prompt">Wybierz trening</string>
     <string name="welcome_logbook">Zapisane treningi</string>
 
+    <string-array name="act_menu">
+        <item>Usuń</item>
+    </string-array>
+
 </resources>

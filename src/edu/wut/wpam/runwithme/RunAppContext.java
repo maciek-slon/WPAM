@@ -71,18 +71,7 @@ public class RunAppContext {
 	
 	public void finish() {
 		if (is_initialized) {
-			// save updated activity to database
-			datasource.open();
-			runActivity.setSummary((long) distance);
-			datasource.updateActivity(runActivity);
-			datasource.close();
-			
-			// save track to file
-			try {
-				saveTrack(runActivity.getDate());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			saveCurrentActivity();
 		}
 		
 		is_initialized = false;
@@ -91,6 +80,21 @@ public class RunAppContext {
 		runActivity = null;
 		listeners = null;
 		runAppContext = null;
+	}
+
+	public void saveCurrentActivity() {
+		// save updated activity to database
+		datasource.open();
+		runActivity.setSummary((long) distance);
+		datasource.updateActivity(runActivity);
+		datasource.close();
+		
+		// save track to file
+		try {
+			saveTrack(runActivity.getDate());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public boolean initialized() {
