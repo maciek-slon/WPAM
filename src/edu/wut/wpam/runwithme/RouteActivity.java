@@ -3,6 +3,7 @@ package edu.wut.wpam.runwithme;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,6 +11,7 @@ import android.graphics.Paint.Align;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputFilter.LengthFilter;
 import android.view.Menu;
@@ -18,10 +20,12 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
+import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
+import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
 
 import edu.wut.wpam.widgets.ITRMapView;
@@ -33,6 +37,7 @@ public class RouteActivity extends MapActivity {
 	private MapController myMapController;
 	private RunAppContext context = RunAppContext.instance();
 	private ITRMapView mapView;
+	MyItemizedOverlay itemizedOverlay;
 
 	private boolean auto_center;
 	private int mode;
@@ -74,6 +79,11 @@ public class RouteActivity extends MapActivity {
 		myMapController.setCenter(new GeoPoint(52000000, 21000000));
 		context.addListener(mapView);
 		mode = 1; // Fixed Center point
+		List<Overlay> mapOverlays = mapView.getOverlays();
+		Drawable drawable = this.getResources().getDrawable(
+				R.drawable.marker_start);
+		itemizedOverlay = new MyItemizedOverlay(drawable, this);
+		mapOverlays.add(itemizedOverlay);
 	}
 
 	@Override
@@ -219,9 +229,66 @@ public class RouteActivity extends MapActivity {
 				} else
 					myMapController.setCenter(new GeoPoint(last_lat, last_lon));
 			}
-
+			itemizedOverlay.addOverlayItem(track.get(0).lat, track.get(0).lon,
+					"I'm here");
 			canvas.drawPath(path, mPaint);
 		}
 	}
 
+	public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
+
+		private ArrayList<OverlayItem> myOverlays;
+		private Context mContext;
+
+		public MyItemizedOverlay(Drawable defaultMarker) {
+			super(boundCenterBottom(defaultMarker));
+			myOverlays = new ArrayList<OverlayItem>();
+			populate();
+		}
+
+		public MyItemizedOverlay(Drawable defaultMarker, Context context) {
+			super(boundCenterBottom(defaultMarker));
+			myOverlays = new ArrayList<OverlayItem>();
+			mContext = context;
+			populate();
+		}
+
+		public void addOverlay(OverlayItem overlay) {
+			myOverlays.add(overlay);
+			populate();
+		}
+
+		@Override
+		protected OverlayItem createItem(int i) {
+			return myOverlays.get(i);
+		}
+
+		// Removes overlay item i
+		public void removeItem(int i) {
+			myOverlays.remove(i);
+			populate();
+		}
+
+		// Returns present number of items in list
+		@Override
+		public int size() {
+			return myOverlays.size();
+		}
+
+		public void addOverlayItem(OverlayItem overlayItem) {
+			myOverlays.add(overlayItem);
+			populate();
+		}
+
+		public void addOverlayItem(int lat, int lon, String title) {
+			try {
+				GeoPoint point = new GeoPoint(lat, lon);
+				OverlayItem overlayItem = new OverlayItem(point, title, null);
+				addOverlayItem(overlayItem);
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+		}
+	}
 }
