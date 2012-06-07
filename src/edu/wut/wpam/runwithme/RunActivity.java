@@ -10,7 +10,7 @@ public class RunActivity {
 	private long date;
 	private long summary;
 
-	public ArrayList<TrackPoint> track;
+	public ArrayList<TrackPoint> track = new ArrayList<TrackPoint>();
 
 	public ArrayList<TrackPoint> getTrack() {
 		return track;

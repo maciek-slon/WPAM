@@ -10,7 +10,10 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class TestDatabaseActivity extends ListActivity {
@@ -29,15 +32,15 @@ public class TestDatabaseActivity extends ListActivity {
 
 		List<RunActivity> values = datasource.getAllActivities();
 		
-		// hide all entries with zero length
+		// hide all entries with negative length (i.e. current one)
 		for (RunActivity act : values) {
-			if (act.getSummary() == 0) {
+			if (act.getSummary() < 0) {
 				values.remove(act);
 			}
 		}
 
 		// Use the SimpleCursorAdapter to show the elements in a ListView
-		ArrayAdapter<RunActivity> adapter = new ArrayAdapter<RunActivity>(this, android.R.layout.simple_list_item_1, values);
+		//ArrayAdapter<RunActivity> adapter = new ArrayAdapter<RunActivity>(this, android.R.layout.simple_list_item_1, values);
 		//setListAdapter(adapter);
 		setListAdapter(new ArrayAdapter<RunActivity>(this, R.layout.list_item, values) {
 			@Override
@@ -58,6 +61,22 @@ public class TestDatabaseActivity extends ListActivity {
 				return row;
 			}
 		});
+		
+//		ListView lv = (ListView)findViewById(android.R.id.list);
+//		lv.setOnItemClickListener(new OnItemClickListener() {
+//		      private AdapterView<?> arg0;
+//
+//			public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
+//		        String selectedFromList = (lv.getItemAtPosition(myItemInt));
+//
+//		      }
+//
+//			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+//					long arg3) {
+//				// TODO Auto-generated method stub
+//				
+//			}                 
+//		}
 	}
 
 	// Will be called via the onClick attribute

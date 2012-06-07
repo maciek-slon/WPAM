@@ -1,7 +1,10 @@
 package edu.wut.wpam.runwithme;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import android.R.bool;
@@ -15,6 +18,7 @@ public class RunAppContext {
 	private ActivityDataSource datasource;
 	
 	private boolean is_initialized = false;
+	private boolean is_static = false;
 	
 	private static ArrayList<View> listeners = new ArrayList<View>();
 	
@@ -38,24 +42,51 @@ public class RunAppContext {
 	}
 	
 	public void init() {
+		listeners = new ArrayList<View>();
 		datasource.open();
-		runActivity = datasource.createRunActivity(System.currentTimeMillis(), 0);
+		runActivity = datasource.createRunActivity(System.currentTimeMillis(), -1);
 		distance = 0;
 		speed = 0;
 		is_initialized = true;
+		is_static = false;
 		datasource.close();
+	}
+	
+	public void initFromFile(RunActivity act) {
+		listeners = new ArrayList<View>();
+		datasource.open();
+		runActivity = act;
+		distance = act.getSummary();
+		speed = 0;
+		is_initialized = true;
+		datasource.close();
+		is_static = true;
+		try {
+			loadTrack(act.getDate());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void finish() {
 		if (is_initialized) {
-			// save everything to file
+			// save updated activity to database
 			datasource.open();
-			runActivity.setSummary(11);
+			runActivity.setSummary((long) distance);
 			datasource.updateActivity(runActivity);
 			datasource.close();
+			
+			// save track to file
+			try {
+				saveTrack(runActivity.getDate());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		is_initialized = false;
+		is_static = false;
 		context = null;
 		runActivity = null;
 		listeners = null;
@@ -71,7 +102,7 @@ public class RunAppContext {
 	private float distance;
 	
 	public void addTrackPoint(TrackPoint pt) {
-		//track.add(pt);
+		runActivity.getTrack().add(pt);
 		notifyUI();
 	}
 	
@@ -89,12 +120,41 @@ public class RunAppContext {
 		listeners.remove(view);
 	}
 	
-	public void save() throws IOException {
-		//String FILENAME = String.valueOf(timestamp);
-		//String data = "";
-		//FileOutputStream fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
-		//fos.write(data.getBytes());
-		//fos.close();
+	public void saveTrack(long timestamp) throws IOException {
+		String FILENAME = "" + timestamp;
+		String data = "";
+
+		if (getTrack() == null)
+			return;
+		
+		FileOutputStream fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
+		for (TrackPoint pt : getTrack()) {
+			data = "" + pt.tim + ";" + pt.lat + ";" + pt.lon + ";" + pt.alt + "\n";
+			fos.write(data.getBytes());
+		}
+		fos.close();
+	}
+	
+	public void loadTrack(long timestamp) throws IOException {
+		String FILENAME = "" + timestamp;
+		String data = "";
+
+		FileInputStream fis = context.openFileInput(FILENAME);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+		
+		do {
+			data = reader.readLine();
+			if (data == null) break;
+			String[] nums = data.split(";");
+			TrackPoint tp = new TrackPoint(0, 0, 0, 0);
+			tp.tim = Integer.parseInt(nums[0]);
+			tp.lat = Integer.parseInt(nums[1]);
+			tp.lon = Integer.parseInt(nums[2]);
+			tp.alt = Integer.parseInt(nums[3]);
+			addTrackPoint(tp);
+		} while(true);
+
+		fis.close();
 	}
 	
 	public float getSpeed() {

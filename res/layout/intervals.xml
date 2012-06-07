@@ -11,7 +11,7 @@
         android:layout_marginBottom="10dp"
         android:text="Trening interwałowy"
         android:textAppearance="?android:attr/textAppearanceLarge" android:gravity="center_vertical|center" android:drawableRight="@drawable/ic_intervals_white"/>
-
+ 
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
