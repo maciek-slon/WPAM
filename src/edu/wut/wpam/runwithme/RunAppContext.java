@@ -145,9 +145,10 @@ public class RunAppContext {
 		do {
 			data = reader.readLine();
 			if (data == null) break;
+			//// TODO: sprawdzanie poprawności danych
 			String[] nums = data.split(";");
 			TrackPoint tp = new TrackPoint(0, 0, 0, 0);
-			tp.tim = Integer.parseInt(nums[0]);
+			tp.tim = Long.parseLong(nums[0]);
 			tp.lat = Integer.parseInt(nums[1]);
 			tp.lon = Integer.parseInt(nums[2]);
 			tp.alt = Integer.parseInt(nums[3]);
