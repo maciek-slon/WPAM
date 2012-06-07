@@ -4,10 +4,10 @@ import java.util.List;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import java.util.Random;
 
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,7 +19,8 @@ import android.widget.TextView;
 public class TestDatabaseActivity extends ListActivity {
 	private ActivityDataSource datasource;
     private LayoutInflater mInflater;
-
+    List<RunActivity> values;
+    
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,7 +31,7 @@ public class TestDatabaseActivity extends ListActivity {
 		datasource = new ActivityDataSource(this);
 		datasource.open();
 
-		List<RunActivity> values = datasource.getAllActivities();
+		values = datasource.getAllActivities();
 		
 		// hide all entries with negative length (i.e. current one)
 		for (RunActivity act : values) {
@@ -62,21 +63,15 @@ public class TestDatabaseActivity extends ListActivity {
 			}
 		});
 		
-//		ListView lv = (ListView)findViewById(android.R.id.list);
-//		lv.setOnItemClickListener(new OnItemClickListener() {
-//		      private AdapterView<?> arg0;
-//
-//			public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
-//		        String selectedFromList = (lv.getItemAtPosition(myItemInt));
-//
-//		      }
-//
-//			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-//					long arg3) {
-//				// TODO Auto-generated method stub
-//				
-//			}                 
-//		}
+		ListView listView = (ListView)findViewById(android.R.id.list);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view,
+				int position, long id) {
+				RunAppContext.instance().initFromFile(values.get(position));
+				Intent myIntent = new Intent(view.getContext(), MonitorActivity.class);
+                startActivityForResult(myIntent, 0);
+			}
+		});
 	}
 
 	// Will be called via the onClick attribute
