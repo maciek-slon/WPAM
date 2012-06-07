@@ -91,13 +91,16 @@ public class RouteActivity extends MapActivity {
 			tPaint.setStrokeJoin(Paint.Join.ROUND);
 			tPaint.setStrokeCap(Paint.Cap.ROUND);
 			tPaint.setStrokeWidth(2);
-			tPaint.setTextSize(40);
+			
+			int density = canvas.getDensity();
+			int txtSize = density/6;
+			tPaint.setTextSize(txtSize);
 			
 			Paint rPaint = new Paint();
 			rPaint.setColor(Color.BLACK);
 			rPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 			rPaint.setAlpha(80);
-
+			
 			String speed = String.valueOf(context.getSpeed()) + " km/h";
 			float dist = context.getDistance()/1000;
 			String time = String.valueOf(context.getTime());
