@@ -11,6 +11,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.text.InputFilter.LengthFilter;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -30,6 +31,15 @@ public class RouteActivity extends MapActivity {
 	private ITRMapView mapView;
 
 	private boolean auto_center;
+	private int mode; 
+
+	public int getMode() {
+		return mode;
+	}
+
+	public void setMode(int mode) {
+		this.mode = mode;
+	}
 
 	public boolean isAuto_center() {
 		return auto_center;
@@ -59,6 +69,7 @@ public class RouteActivity extends MapActivity {
 		myMapController.setZoom(17); // Fixed Zoom Level
 		myMapController.setCenter(new GeoPoint(52000000, 21000000));
 		context.addListener(mapView);
+		mode = 1; //Fixed Center point
 	}
 
 	public void onDestroy() {
@@ -141,6 +152,7 @@ public class RouteActivity extends MapActivity {
 				GeoPoint gP1 = new GeoPoint(lat, lon);
 				Point p1 = new Point();
 				projection.toPixels(gP1, p1);
+								
 
 				if (i == 0) {
 					path.moveTo(p1.x, p1.y);
@@ -158,10 +170,15 @@ public class RouteActivity extends MapActivity {
 						max_lat = lat;
 				}
 			}
+			int last_lon = track.get(track.size()-1).lon;
+			int last_lat = track.get(track.size()-1).lat;
 			int mean_lat = (min_lat + max_lat) / 2;
 			int mean_lon = (min_lon + max_lon) / 2;
 			if (System.currentTimeMillis() - mapView.getLast_touched() > 10000) {
-				myMapController.setCenter(new GeoPoint(mean_lat, mean_lon));
+				if (mode == 1)
+					myMapController.setCenter(new GeoPoint(mean_lat, mean_lon));
+				else 
+					myMapController.setCenter(new GeoPoint(last_lat, last_lon));
 			}
 
 			canvas.drawPath(path, mPaint);			
