@@ -120,11 +120,11 @@ public class RouteActivity extends MapActivity {
 			
 			time = "" + disHour +":" + disMinu + ":" + disSec;
 			
-			canvas.drawRect(new Rect (0,0, mapView.getWidth(), 140), rPaint);
-			canvas.drawText(speed, 20, 60, tPaint);
-			canvas.drawText(time,20,120, tPaint);
+			canvas.drawRect(new Rect (0,0, mapView.getWidth(), (int) (0.58*density)), rPaint);
+			canvas.drawText(speed, 20, (float) (0.25*density), tPaint);
+			canvas.drawText(time,20,(float) (0.5*density), tPaint);
 			tPaint.setTextAlign(Align.RIGHT);
-			canvas.drawText(distance, mapView.getWidth()-20, 60, tPaint);
+			canvas.drawText(distance, mapView.getWidth()-20, (float) (0.25*density), tPaint);
 			
 			
 			Path path = new Path();
