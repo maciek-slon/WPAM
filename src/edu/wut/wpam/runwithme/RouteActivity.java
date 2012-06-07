@@ -12,6 +12,10 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.InputFilter.LengthFilter;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -71,6 +75,34 @@ public class RouteActivity extends MapActivity {
 		context.addListener(mapView);
 		mode = 1; //Fixed Center point
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.menu, menu);
+	    return true;
+	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case R.id.centr:    if (mode == 1) {
+	        						mode=2; 
+	        						Toast.makeText(this, "Zmieniles tryb centrowania!", Toast.LENGTH_LONG).show();
+	        						item.setIcon(R.drawable.ic_crosshair);
+	        					}
+	        					else {
+	        						mode =1;
+	        						Toast.makeText(this, "Zmieniles tryb centrowania!", Toast.LENGTH_LONG).show();
+	        						item.setIcon(R.drawable.ic_bike);
+	        					}
+	                            break;
+	        case R.id.text:     Toast.makeText(this, "You pressed the text!", Toast.LENGTH_LONG).show();
+	                            break;
+	        case R.id.icontext: Toast.makeText(this, "You pressed the icon and text!", Toast.LENGTH_LONG).show();
+	                            break;
+	    }
+	    return true;
+	}
 
 	public void onDestroy() {
 		context.removeListener(mapView);
@@ -124,7 +156,6 @@ public class RouteActivity extends MapActivity {
 			
 			String distance = String.format("%.2f",dist) + " km";
 			
-			
 			String disHour = (hour < 10 ? "0" : "") + hour,
 			disMinu = (minutes < 10 ? "0" : "") + minutes ,
 			disSec = (sec < 10 ? "0" : "") + sec ;
@@ -175,8 +206,10 @@ public class RouteActivity extends MapActivity {
 			int mean_lat = (min_lat + max_lat) / 2;
 			int mean_lon = (min_lon + max_lon) / 2;
 			if (System.currentTimeMillis() - mapView.getLast_touched() > 10000) {
-				if (mode == 1)
+				if (mode == 1){
+					myMapController.zoomToSpan(max_lat - min_lat, max_lon - min_lon) ;
 					myMapController.setCenter(new GeoPoint(mean_lat, mean_lon));
+				}	
 				else 
 					myMapController.setCenter(new GeoPoint(last_lat, last_lon));
 			}
