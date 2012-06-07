@@ -94,8 +94,7 @@ public class RouteActivity extends MapActivity {
 				mode = 1;
 				item.setIcon(R.drawable.ic_bike);
 			}
-			Toast.makeText(this, "Zmieniles tryb centrowania!",
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Zmieniles tryb centrowania!",	Toast.LENGTH_LONG).show();
 			mapView.setLast_touched(0);
 			mapView.invalidate();
 			break;

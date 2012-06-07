@@ -3,8 +3,6 @@ package edu.wut.wpam.runwithme;
 import java.util.ArrayList;
 import java.util.Date;
 
-import android.view.View;
-
 public class RunActivity {
 	private long id;
 	private long date;

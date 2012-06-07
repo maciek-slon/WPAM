@@ -1,5 +1,7 @@
 package edu.wut.wpam.runwithme;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import android.view.ContextMenu;
@@ -29,6 +31,7 @@ public class TestDatabaseActivity extends ListActivity {
 	AlertDialog.Builder builder;
 	RunActivity act;
 	ArrayAdapter<RunActivity> adapter;
+	SimpleDateFormat formatter = new SimpleDateFormat("d MMMM yyyy, H:mm");
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -71,8 +74,10 @@ public class TestDatabaseActivity extends ListActivity {
 					row = convertView;
 				}
 
+				Date date = new Date(getItem(position).getDate());
+				
 				TextView tv = (TextView) row.findViewById(R.id.tvDate);
-				tv.setText(getItem(position).toString());
+				tv.setText(formatter.format(date));
 				tv = (TextView) row.findViewById(R.id.tvDist);
 				tv.setText("" + getItem(position).getSummary() * 0.001 + "km");
 
@@ -102,6 +107,9 @@ public class TestDatabaseActivity extends ListActivity {
 				}
 			}
 		});
+		
+
+	    registerForContextMenu(listView);
 	}
 
 	public void showLog(boolean dofinish) {
@@ -144,7 +152,10 @@ public class TestDatabaseActivity extends ListActivity {
 			ContextMenuInfo menuInfo) {
 		if (v.getId() == android.R.id.list) {
 			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-			menu.setHeaderTitle("Test");
+			RunActivity act = values.get(info.position);
+			Date date = new Date(act.getDate());
+			SimpleDateFormat formatter = new SimpleDateFormat("d MMMM yyyy");
+			menu.setHeaderTitle(formatter.format(date));
 			String[] menuItems = getResources()
 					.getStringArray(R.array.act_menu);
 			for (int i = 0; i < menuItems.length; i++) {
@@ -157,11 +168,12 @@ public class TestDatabaseActivity extends ListActivity {
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		int menuItemIndex = item.getItemId();
-		String[] menuItems = getResources().getStringArray(R.array.act_menu);
-		String menuItemName = menuItems[menuItemIndex];
+		//String[] menuItems = getResources().getStringArray(R.array.act_menu);
+		//String menuItemName = menuItems[];
 		RunActivity act = values.get(info.position);
 
-		if (menuItemName == "Usuń") {
+		if (menuItemIndex == 0) {
+			System.out.println("DELETE!");
 			datasource.open();
 			datasource.deleteActivity(act);
 			adapter.remove(act);

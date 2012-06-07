@@ -25,7 +25,6 @@ public class MonitorActivity extends TabActivity {
 	private Workout workout;
 	
 	private Timer myTimer;
-	//IntervalWorkout workout = new IntervalWorkout();
 	MyLocationListener myLocationListener;
 
 	private RunAppContext context = RunAppContext.instance();

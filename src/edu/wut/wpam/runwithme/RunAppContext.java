@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import android.R.bool;
-import android.app.Application;
 import android.content.Context;
 import android.view.View;
 
@@ -190,6 +188,9 @@ public class RunAppContext {
 	public ArrayList<TrackPoint> getTrack() {
 		return runActivity.getTrack();
 	}
-	
+
+	public boolean isStatic() {
+		return is_static;
+	}
 	
 }
