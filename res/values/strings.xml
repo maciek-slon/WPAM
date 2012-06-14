@@ -14,5 +14,7 @@
     <string-array name="act_menu">
         <item>Usuń</item>
     </string-array>
+        <string name="speed">Prędkość</string>
+        <string name="monitor_showmap">Wyświetl mapę</string>
 
 </resources>

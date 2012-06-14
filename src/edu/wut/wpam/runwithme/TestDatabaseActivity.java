@@ -40,9 +40,16 @@ public class TestDatabaseActivity extends ListActivity {
 
 		builder = new AlertDialog.Builder(this);
 		builder.setTitle("Zakończyć bieg?")
-				.setMessage(
-						"Wybranie tej opcji spowoduje zakończenie bieżącego biegu.")
-				.setIcon(android.R.drawable.ic_dialog_alert);
+				.setMessage("Wybranie tej opcji spowoduje zakończenie bieżącego biegu.")
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setPositiveButton("Yes",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+								// Yes button clicked, do something
+								TestDatabaseActivity.this.showLog(true);
+							}
+						}).setNegativeButton("No", null);
 
 		mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -54,7 +61,7 @@ public class TestDatabaseActivity extends ListActivity {
 		// hide all entries with negative length (i.e. current one)
 		for (RunActivity act : values) {
 			if (act.getSummary() < 0) {
-				values.remove(act);
+				//values.remove(act);
 			}
 		}
 
@@ -79,7 +86,7 @@ public class TestDatabaseActivity extends ListActivity {
 				TextView tv = (TextView) row.findViewById(R.id.tvDate);
 				tv.setText(formatter.format(date));
 				tv = (TextView) row.findViewById(R.id.tvDist);
-				tv.setText("" + getItem(position).getSummary() * 0.001 + "km");
+				tv.setText(String.format("%.2fkm", getItem(position).getSummary() * 0.001));
 
 				return row;
 			}
@@ -92,15 +99,9 @@ public class TestDatabaseActivity extends ListActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				act = values.get(position);
-				if (RunAppContext.instance().initialized()) {
-					builder.setPositiveButton("Yes",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-									// Yes button clicked, do something
-									TestDatabaseActivity.this.showLog(true);
-								}
-							}).setNegativeButton("No", null);
+				System.out.println("Init: " + RunAppContext.instance().initialized() +
+						" Static: " + RunAppContext.instance().isStatic());
+				if (RunAppContext.instance().initialized() && !RunAppContext.instance().isStatic()) {
 					builder.show();
 				} else {
 					showLog(false);
@@ -118,7 +119,7 @@ public class TestDatabaseActivity extends ListActivity {
 		}
 
 		RunAppContext.instance().initFromFile(act);
-		Intent myIntent = new Intent(this, MonitorActivity.class);
+		Intent myIntent = new Intent(this, LogActivity.class);
 		startActivityForResult(myIntent, 0);
 	}
 

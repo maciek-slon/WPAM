@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.os.Environment;
 import android.view.View;
 
 public class RunAppContext {
@@ -24,6 +25,10 @@ public class RunAppContext {
 
 	private RunActivity runActivity;
 	
+	public RunActivity getActivity() {
+		return runActivity;
+	}
+
 	private RunAppContext() {
 	} 
 
@@ -59,6 +64,7 @@ public class RunAppContext {
 		is_initialized = true;
 		datasource.close();
 		is_static = true;
+		runActivity.setTrack(new ArrayList<TrackPoint>());
 		try {
 			loadTrack(act.getDate());
 		} catch (IOException e) {
@@ -68,7 +74,7 @@ public class RunAppContext {
 	}
 	
 	public void finish() {
-		if (is_initialized) {
+		if (is_initialized && !is_static) {
 			saveCurrentActivity();
 		}
 		
@@ -144,19 +150,33 @@ public class RunAppContext {
 		FileInputStream fis = context.openFileInput(FILENAME);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
 		
+		long inittime = 0;
+		long lasttime = 0;
+		
 		do {
 			data = reader.readLine();
 			if (data == null) break;
-			//// TODO: sprawdzanie poprawności danych
+			// TODO: sprawdzanie poprawności danych
 			String[] nums = data.split(";");
 			TrackPoint tp = new TrackPoint(0, 0, 0, 0);
+			
 			tp.tim = Long.parseLong(nums[0]);
 			tp.lat = Integer.parseInt(nums[1]);
 			tp.lon = Integer.parseInt(nums[2]);
 			tp.alt = Integer.parseInt(nums[3]);
+			
+			//System.out.println(tp.tim);
+			
+			if (inittime == 0) inittime = tp.tim;
+			lasttime = tp.tim;
+			
 			addTrackPoint(tp);
 		} while(true);
 
+		float timediff = 0.001f * (lasttime - inittime);
+		System.out.println("" + runActivity.getSummary() + "m in " + timediff + "s");
+		runActivity.setLength((int) timediff);
+		
 		fis.close();
 	}
 	
@@ -178,7 +198,11 @@ public class RunAppContext {
 	
 	
 	public float getTime() {
-		return 0.001f * (System.currentTimeMillis() - runActivity.getDate());
+		if (is_static) {
+			return runActivity.getLength();
+		} else {
+			return 0.001f * (System.currentTimeMillis() - runActivity.getDate());
+		}
 	}
 	
 	public Workout getActiveWorkout() {

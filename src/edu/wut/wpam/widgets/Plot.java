@@ -39,7 +39,7 @@ public class Plot extends View {
 
 	private float marker;
 
-	public void seXStart(float start) {
+	public void setXStart(float start) {
 		this.x_start = start;
 	}
 
@@ -91,6 +91,21 @@ public class Plot extends View {
 
 	public void setIntervals(ArrayList<Float> i) {
 		intervals = i;
+	}
+	
+	public void setElems(ArrayList<PointF> points) {
+		if (points == null)
+			return;
+		
+		elems = points;
+		
+		x_end = 10;
+		for (PointF elem : points) {
+			if (elem.y > elem_max) elem_max = elem.y;
+			if (elem.x > x_end)	x_end = elem.x;
+		}
+		
+		recalculateScales();
 	}
 
 	public void add(PointF elem) {

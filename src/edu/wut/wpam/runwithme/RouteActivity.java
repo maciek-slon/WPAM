@@ -1,5 +1,6 @@
 package edu.wut.wpam.runwithme;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +12,10 @@ import android.graphics.Paint.Align;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.InputFilter.LengthFilter;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,6 +32,11 @@ import com.google.android.maps.Projection;
 
 import edu.wut.wpam.widgets.ITRMapView;
 
+enum CenterMode {
+	FIT,
+	FOLLOW
+}
+
 public class RouteActivity extends MapActivity {
 	private List<Overlay> mapOverlays;
 
@@ -40,13 +47,13 @@ public class RouteActivity extends MapActivity {
 	MyItemizedOverlay itemizedOverlay;
 
 	private boolean auto_center;
-	private int mode;
+	private CenterMode mode;
 
-	public int getMode() {
+	public CenterMode getMode() {
 		return mode;
 	}
 
-	public void setMode(int mode) {
+	public void setMode(CenterMode mode) {
 		this.mode = mode;
 	}
 
@@ -71,19 +78,22 @@ public class RouteActivity extends MapActivity {
 		mapView = (ITRMapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 
-		mapOverlays = mapView.getOverlays();
 		projection = mapView.getProjection();
-		mapOverlays.add(new MyOverlay());
+		
 		myMapController = mapView.getController();
 		myMapController.setZoom(17); // Fixed Zoom Level
 		myMapController.setCenter(new GeoPoint(52000000, 21000000));
+		
 		context.addListener(mapView);
-		mode = 1; // Fixed Center point
-		List<Overlay> mapOverlays = mapView.getOverlays();
-		Drawable drawable = this.getResources().getDrawable(
-				R.drawable.marker_start);
-		itemizedOverlay = new MyItemizedOverlay(drawable, this);
+		mode = CenterMode.FOLLOW; // Fixed Center point
+		
+		Drawable drawable = this.getResources().getDrawable(R.drawable.marker_start);
+		itemizedOverlay = new MyItemizedOverlay(drawable, this); 
+		
+		mapOverlays = mapView.getOverlays();
+		mapOverlays.add(new MyOverlay());
 		mapOverlays.add(itemizedOverlay);
+		mapOverlays.add(new SummaryOverlay());
 	}
 
 	@Override
@@ -96,25 +106,25 @@ public class RouteActivity extends MapActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.centr:
-			if (mode == 1) {
-				mode = 2;
-				item.setIcon(R.drawable.ic_crosshair);
-			} else {
-				mode = 1;
-				item.setIcon(R.drawable.ic_bike);
-			}
-			Toast.makeText(this, "Zmieniles tryb centrowania!",	Toast.LENGTH_LONG).show();
+		case R.id.cmFit:
+			mode = CenterMode.FIT;
+			Toast.makeText(this, "Wyświetlam całą trasę", Toast.LENGTH_LONG).show();
 			mapView.setLast_touched(0);
 			mapView.invalidate();
 			break;
-		case R.id.text:
-			Toast.makeText(this, "You pressed the text!", Toast.LENGTH_LONG)
-					.show();
+		case R.id.cmFollow:
+			mode = CenterMode.FOLLOW;
+			Toast.makeText(this, "Śledzę bieżący punkt", Toast.LENGTH_LONG).show();
+			mapView.setLast_touched(0);
+			mapView.invalidate();
 			break;
-		case R.id.icontext:
-			Toast.makeText(this, "You pressed the icon and text!",
-					Toast.LENGTH_LONG).show();
+		case R.id.cmViewMap:
+			mapView.setSatellite(false);
+			mapView.invalidate();
+			break;
+		case R.id.cmViewSatelite:
+			mapView.setSatellite(true);
+			mapView.invalidate();
 			break;
 		}
 		return true;
@@ -122,78 +132,97 @@ public class RouteActivity extends MapActivity {
 
 	public void onDestroy() {
 		context.removeListener(mapView);
-
 		super.onDestroy();
 	}
 
-	class MyOverlay extends Overlay {
+	class SummaryOverlay extends Overlay {
+		private Paint tPaint;
+		private Paint rPaint;
+		private float bl;
 
-		public MyOverlay() {
+		public SummaryOverlay() {
+			preparePaints();
 		}
-
+		
 		public void draw(Canvas canvas, MapView mapv, boolean shadow) {
 			super.draw(canvas, mapv, shadow);
-
-			Paint mPaint = new Paint();
-			mPaint.setDither(true);
-			mPaint.setColor(Color.RED);
-			mPaint.setStyle(Paint.Style.STROKE);
-			mPaint.setStrokeJoin(Paint.Join.ROUND);
-			mPaint.setStrokeCap(Paint.Cap.ROUND);
-			mPaint.setStrokeWidth(3);
-
-			Paint tPaint = new Paint();
+			
+			String speed = String.format("%.2f km/h", context.getSpeed());
+			String distance = String.format("%.2f km", 0.001f * context.getDistance());
+			float seconds = context.getTime();
+			String time = Helper.formatTime(seconds);
+			
+			tPaint.setTextAlign(Align.LEFT);
+			canvas.drawRect(new RectF(0, 0, mapView.getWidth(), 5*bl), rPaint);
+			canvas.drawText(speed, bl, 2*bl, tPaint);
+			canvas.drawText(time, bl, 4*bl, tPaint);
+			tPaint.setTextAlign(Align.RIGHT);
+			canvas.drawText(distance, mapView.getWidth() - bl, 2*bl, tPaint);
+		}
+		
+		private void preparePaints() {
+			DisplayMetrics metrics = new DisplayMetrics();
+			getWindowManager().getDefaultDisplay().getMetrics(metrics);
+			
+			bl = 0.1f * metrics.densityDpi;
+			
+			tPaint = new Paint();
 			tPaint.setAntiAlias(true);
 			tPaint.setColor(Color.WHITE);
 			tPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 			tPaint.setStrokeJoin(Paint.Join.ROUND);
 			tPaint.setStrokeCap(Paint.Cap.ROUND);
-			tPaint.setStrokeWidth(2);
+			tPaint.setTextSize(metrics.densityDpi / 6.0f);
+			tPaint.setStrokeWidth(metrics.densityDpi / 120.0f);
+			tPaint.setShadowLayer(1, 1, 1, Color.rgb(60, 60, 60));
 
-			int density = canvas.getDensity();
-			int txtSize = density / 6;
-			tPaint.setTextSize(txtSize);
-
-			Paint rPaint = new Paint();
+			rPaint = new Paint();
 			rPaint.setColor(Color.BLACK);
 			rPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 			rPaint.setAlpha(80);
+		}
+	}
+	
+	class MyOverlay extends Overlay {
 
-			String speed = String.valueOf(context.getSpeed()) + " km/h";
-			float dist = context.getDistance() / 1000;
-			String time = String.valueOf(context.getTime());
-			float seconds = context.getTime();
-			int hour = (int) Math.floor(seconds / 3600);
-			seconds = seconds - hour * 3600;
-			int minutes = (int) Math.floor(seconds / 60);
-			seconds = seconds - minutes * 60;
-			int sec = (int) Math.floor(seconds);
+		private Paint mPaint;
 
-			String distance = String.format("%.2f", dist) + " km";
+		private Path path = new Path();
+				
+		public MyOverlay() {
+			preparePaints();
+		}
 
-			String disHour = (hour < 10 ? "0" : "") + hour, disMinu = (minutes < 10 ? "0"
-					: "")
-					+ minutes, disSec = (sec < 10 ? "0" : "") + sec;
+		private void preparePaints() {
+			mPaint = new Paint();
+			mPaint.setAntiAlias(true);
+			mPaint.setColor(Color.RED);
+			mPaint.setAlpha(192);
+			mPaint.setStyle(Paint.Style.STROKE);
+			mPaint.setStrokeJoin(Paint.Join.ROUND);
+			mPaint.setStrokeCap(Paint.Cap.ROUND);
+			mPaint.setStrokeWidth(3);
+		}
+		
+		public void draw(Canvas canvas, MapView mapv, boolean shadow) {
+			super.draw(canvas, mapv, shadow);
 
-			time = "" + disHour + ":" + disMinu + ":" + disSec;
-
-			canvas.drawRect(new Rect(0, 0, mapView.getWidth(),
-					(int) (0.58 * density)), rPaint);
-			canvas.drawText(speed, 20, (float) (0.25 * density), tPaint);
-			canvas.drawText(time, 20, (float) (0.5 * density), tPaint);
-			tPaint.setTextAlign(Align.RIGHT);
-			canvas.drawText(distance, mapView.getWidth() - 20,
-					(float) (0.25 * density), tPaint);
-
-			Path path = new Path();
-
+			path.reset();
+			
 			ArrayList<TrackPoint> track = context.getTrack();
+			
 			if (track == null || track.size() == 0) {
 				return;
 			}
+			
 			int min_lat = 0, min_lon = 0, max_lat = 0, max_lon = 0;
 
+			long lasttime = track.get(0).tim;
+
 			for (int i = 0; i < track.size(); ++i) {
+				
+				if (track.get(i).tim - lasttime < 0) break;
+				
 				int lat = track.get(i).lat;
 				int lon = track.get(i).lon;
 				GeoPoint gP1 = new GeoPoint(lat, lon);
@@ -216,22 +245,26 @@ public class RouteActivity extends MapActivity {
 						max_lat = lat;
 				}
 			}
+			
 			int last_lon = track.get(track.size() - 1).lon;
 			int last_lat = track.get(track.size() - 1).lat;
 			int mean_lat = (min_lat + max_lat) / 2;
 			int mean_lon = (min_lon + max_lon) / 2;
 			if (System.currentTimeMillis() - mapView.getLast_touched() > 10000) {
-				if (mode == 1) {
-					myMapController.zoomToSpan(max_lat - min_lat, max_lon
-							- min_lon);
+				switch (mode) {
+				case FIT:
+					myMapController.zoomToSpan(max_lat - min_lat, max_lon - min_lon);
 					myMapController.setCenter(new GeoPoint(mean_lat, mean_lon));
-				} else
+					break;
+				case FOLLOW:
 					myMapController.setCenter(new GeoPoint(last_lat, last_lon));
+					break;
+				}	
 			}
-			itemizedOverlay.addOverlayItem(track.get(0).lat, track.get(0).lon,
-					"I'm here");
+			itemizedOverlay.addOverlayItem(track.get(0).lat, track.get(0).lon, "I'm here");
 			canvas.drawPath(path, mPaint);
 		}
+
 	}
 
 	public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {

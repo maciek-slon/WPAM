@@ -7,8 +7,17 @@ public class RunActivity {
 	private long id;
 	private long date;
 	private long summary;
+	private int length;
 
 	public ArrayList<TrackPoint> track = new ArrayList<TrackPoint>();
+
+	public long getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
 
 	public ArrayList<TrackPoint> getTrack() {
 		return track;

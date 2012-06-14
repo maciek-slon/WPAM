@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/centr"
-        android:title="Centrowanie"
-        android:icon="@drawable/ic_crosshair" />
-    <item android:id="@+id/text"
-        android:title="Text" />
-    <item android:id="@+id/icontext"
-        android:title="Icon and text"
-        android:icon="@drawable/ic_bike" />
+    <item android:id="@+id/cmFit"
+        android:title="Dopasuj"
+        android:icon="@drawable/ic_fit" />
+    <item android:id="@+id/cmFollow"
+        android:title="Podążaj" android:icon="@drawable/ic_follow"/>
+    <item android:id="@+id/cmViewMap" android:title="Mapa" android:icon="@drawable/ic_map"></item>
+    <item android:id="@+id/cmViewSatelite" android:icon="@drawable/ic_earth" android:title="Satelita"></item>
 </menu>

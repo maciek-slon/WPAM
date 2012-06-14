@@ -40,7 +40,7 @@ public class MonitorActivity extends TabActivity {
 		// ---------------------------------------------
 		// Setup context
 		// ---------------------------------------------
-		if (!context.initialized()) {
+		if (!context.initialized() || context.isStatic()) {
 			context.init();
 		}
 		
