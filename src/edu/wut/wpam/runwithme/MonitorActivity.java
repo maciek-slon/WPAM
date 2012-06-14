@@ -29,6 +29,16 @@ public class MonitorActivity extends TabActivity {
 
 	private RunAppContext context = RunAppContext.instance();
 	
+	private void setButtonActivity(int id, final Class<?> cls) {
+		Button btn = (Button) findViewById(id);
+        btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {                
+                Intent myIntent = new Intent(MonitorActivity.this, cls);
+                startActivity(myIntent);
+            }
+        });
+	}
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +65,7 @@ public class MonitorActivity extends TabActivity {
 				.setContent(R.id.tab1));
 		mTabHost.addTab(mTabHost
 				.newTabSpec("tab_test2")
-				.setIndicator("Rolki",
+				.setIndicator("Treningi",
 						getResources().getDrawable(R.drawable.ic_skate))
 				.setContent(R.id.tab2));
 		mTabHost.addTab(mTabHost
@@ -100,18 +110,8 @@ public class MonitorActivity extends TabActivity {
 			plot.setIntervals(workout.getIntervals());*/
 		}
 
-		TextView tv = (TextView) findViewById(R.id.textview3);
-		tv.setText("READY!");
-
-		Button map = (Button) findViewById(R.id.btnShowMap);
-		map.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				Intent myIntent = new Intent(view.getContext(),
-						RouteActivity.class);
-				startActivityForResult(myIntent, 0);
-			}
-
-		});
+		setButtonActivity(R.id.btnShowMap, RouteActivity.class);
+		setButtonActivity(R.id.btnAddWorkout, IntervalPickerActivity.class);
 	}
 
 	@Override
@@ -186,9 +186,6 @@ public class MonitorActivity extends TabActivity {
 				spd = 3.6f * dist / dt;
 				starttime = tm;
 				last = loc;
-				String Text = "" + dist + "m/" + dt + "s = " + spd + "km/h";
-				TextView tv = (TextView) findViewById(R.id.textview3);
-				tv.setText(Text);
 
 				tp = new TrackPoint(
 						(int) (loc.getLatitude() * 1e6), 

@@ -4,7 +4,7 @@
     <string name="hello">Hello World, RunWithMeActivity!</string>
     <string name="app_name">RunWithMe</string>
     <string name="welcome_title">Co dziś porobimy?</string>
-    <string name="welcome_intervals">Trening interwałowy</string>
+    <string name="welcome_intervals">Rozpocznij trening</string>
     <string name="welcome_distances">Dystansy</string>
     <string name="welcome_stopwatch">Stoper</string>
     <string name="intervals_speed">Szybkość</string>
@@ -16,5 +16,6 @@
     </string-array>
         <string name="speed">Prędkość</string>
         <string name="monitor_showmap">Wyświetl mapę</string>
+        <string name="monitor_addworkout">Dodaj trening</string>
 
 </resources>

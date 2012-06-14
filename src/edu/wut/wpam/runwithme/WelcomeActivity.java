@@ -26,9 +26,8 @@ public class WelcomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome);
 
-        setButtonActivity(R.id.btnIntervals, IntervalPickerActivity.class);
+        setButtonActivity(R.id.btnIntervals, MonitorActivity.class);
         setButtonActivity(R.id.btnStopwatch, StopwatchActivity.class);
-        setButtonActivity(R.id.btnRun, MonitorActivity.class);
         setButtonActivity(R.id.btnDatabase, TestDatabaseActivity.class);
         
         RunAppContext.instance().setContext(getApplicationContext());

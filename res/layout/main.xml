@@ -2,19 +2,42 @@
 <TabHost xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/tabhost"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent" >
+
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
         <TabWidget
             android:id="@android:id/tabs"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
+
         <FrameLayout
             android:id="@android:id/tabcontent"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="fill_parent" >
+
+            <LinearLayout
+                android:id="@+id/tab2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <ListView
+                    android:id="@+id/listView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:layout_weight="1">
+                </ListView>
+
+                <Button
+                    android:id="@+id/btnAddWorkout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/monitor_addworkout" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/tab1"
@@ -26,35 +49,15 @@
                     xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/simplePlot"
                     android:layout_width="fill_parent"
-                    android:layout_height="66dp" />
+                    android:layout_height="80dp" />
 
-                <TextView
-                    android:id="@+id/textview3"
-                    android:layout_width="fill_parent"
-                    android:layout_height="40dp"
-                    android:text="this is a third tab" />
-
-                <Button 
+                <Button
                     android:id="@+id/btnShowMap"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.15"
-                    android:text="Button" />
-
+                    android:drawableLeft="@drawable/ic_show_map"
+                    android:text="@string/monitor_showmap" />
             </LinearLayout>
-
-            <FrameLayout
-                android:id="@+id/tab2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-
-                <TextView
-                    android:id="@+id/textview2"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:text="this is another tab" />
-
-            </FrameLayout>
 
             <FrameLayout
                 android:id="@+id/tab3"
@@ -69,4 +72,5 @@
             </FrameLayout>
         </FrameLayout>
     </LinearLayout>
+
 </TabHost>

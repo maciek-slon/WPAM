@@ -3,8 +3,8 @@
     android:id="@+id/linear_layout_1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" 
-    android:padding="10dp">
+    android:orientation="vertical"
+    android:padding="10dp" >
 
     <TextView
         android:id="@+id/logDate"
@@ -23,18 +23,23 @@
             android:id="@+id/logTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge" 
+            android:layout_marginBottom="10dp"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/ic_clock_white" android:gravity="center_vertical" android:drawablePadding="5dp" android:text="test" android:layout_marginBottom="10dp" android:clickable="true" android:onClick="onClick"/>
+            android:clickable="true"
+            android:drawableLeft="@drawable/ic_clock_white"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:onClick="onClick"
+            android:text="test"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
             android:id="@+id/logDist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge" 
-            android:layout_weight="1" 
-            android:gravity="right"/>
-
+            android:layout_weight="1"
+            android:gravity="right"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
     </LinearLayout>
 
     <TextView
@@ -47,14 +52,15 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/logSpeedPlot"
         android:layout_width="fill_parent"
-        android:layout_height="80dp" />
+        android:layout_height="80dp"
+        android:layout_weight="0.00" />
 
     <Button
         android:id="@+id/btnShowMap"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.00"
         android:drawableLeft="@drawable/ic_show_map"
-        android:text="@string/monitor_showmap" android:gravity="center_vertical|center_horizontal"/>
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/monitor_showmap" />
 
 </LinearLayout>

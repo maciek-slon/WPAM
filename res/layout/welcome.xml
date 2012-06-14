@@ -10,25 +10,9 @@
         android:id="@+id/btnIntervals"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_intervals"
+        android:drawableLeft="@drawable/ic_runner"
         android:text="@string/welcome_intervals"
         android:textSize="20dp" />
-
-    <Button
-        android:id="@+id/btnDistances"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_distance"
-        android:text="@string/welcome_distances"
-        android:textSize="20dp" />
-
-    <Button
-        android:id="@+id/btnRun"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Rozpocznij bieg"
-        android:textSize="20dp" 
-        android:drawableLeft="@drawable/ic_runner"/>
 
     <Button
         android:id="@+id/btnStopwatch"
