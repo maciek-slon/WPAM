@@ -87,8 +87,9 @@ public class RouteActivity extends MapActivity {
 		context.addListener(mapView);
 		mode = CenterMode.FOLLOW; // Fixed Center point
 		
-		Drawable drawable = this.getResources().getDrawable(R.drawable.marker_start);
-		itemizedOverlay = new MyItemizedOverlay(drawable, this); 
+		Drawable start = this.getResources().getDrawable(R.drawable.marker_start);
+		itemizedOverlay = new MyItemizedOverlay(start, this); 
+		
 		
 		mapOverlays = mapView.getOverlays();
 		mapOverlays.add(new MyOverlay());
@@ -261,7 +262,8 @@ public class RouteActivity extends MapActivity {
 					break;
 				}	
 			}
-			itemizedOverlay.addOverlayItem(track.get(0).lat, track.get(0).lon, "I'm here");
+			itemizedOverlay.addOverlayItem(track.get(0).lat, track.get(0).lon, "I'm here", R.drawable.marker_start);
+			itemizedOverlay.addOverlayItem(last_lat, last_lon, "I'm here", R.drawable.marker_end);
 			canvas.drawPath(path, mPaint);
 		}
 
@@ -312,10 +314,14 @@ public class RouteActivity extends MapActivity {
 			populate();
 		}
 
-		public void addOverlayItem(int lat, int lon, String title) {
+		public void addOverlayItem(int lat, int lon, String title, int id) {
 			try {
 				GeoPoint point = new GeoPoint(lat, lon);
 				OverlayItem overlayItem = new OverlayItem(point, title, null);
+				Drawable icon = getResources().getDrawable(id);
+				icon.setBounds(-icon.getIntrinsicWidth() / 2, -icon.getIntrinsicHeight(), icon.getIntrinsicWidth() / 2, 0);
+				
+				overlayItem.setMarker(icon);
 				addOverlayItem(overlayItem);
 			} catch (Exception e) {
 				// TODO: handle exception
