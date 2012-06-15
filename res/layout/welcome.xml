@@ -30,4 +30,11 @@
         android:text="@string/welcome_logbook" 
         android:textSize="20dp" />
 
+    <Button
+        android:id="@+id/btnAchieve"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Osiągnięcia"
+        android:textSize="20dp" />
+
 </LinearLayout>

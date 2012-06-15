@@ -29,6 +29,7 @@ public class WelcomeActivity extends Activity {
         setButtonActivity(R.id.btnIntervals, MonitorActivity.class);
         setButtonActivity(R.id.btnStopwatch, StopwatchActivity.class);
         setButtonActivity(R.id.btnDatabase, TestDatabaseActivity.class);
+        setButtonActivity(R.id.btnAchieve, AchievedActivity.class);
         
         RunAppContext.instance().setContext(getApplicationContext());
     }

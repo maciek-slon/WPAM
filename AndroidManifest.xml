@@ -27,6 +27,7 @@
         <activity android:name=".LogActivity"></activity>
         <activity android:name=".TestDatabaseActivity"></activity>
         <activity android:name=".StopwatchActivity"></activity>
+        <activity android:name=".AchievedActivity"></activity>
         <activity android:name=".RouteActivity" android:label="@string/app_name"
      			  android:theme="@android:style/Theme.NoTitleBar"/>
     </application>

@@ -320,7 +320,6 @@ public class RouteActivity extends MapActivity {
 				OverlayItem overlayItem = new OverlayItem(point, title, null);
 				Drawable icon = getResources().getDrawable(id);
 				icon.setBounds(-icon.getIntrinsicWidth() / 2, -icon.getIntrinsicHeight(), icon.getIntrinsicWidth() / 2, 0);
-				
 				overlayItem.setMarker(icon);
 				addOverlayItem(overlayItem);
 			} catch (Exception e) {
