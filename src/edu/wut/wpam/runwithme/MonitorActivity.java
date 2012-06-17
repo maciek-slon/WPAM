@@ -14,7 +14,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +28,8 @@ public class MonitorActivity extends TabActivity {
 	
 	private Timer myTimer;
 	MyLocationListener myLocationListener;
+	
+	ListView list;
 
 	private RunAppContext context = RunAppContext.instance();
 	
@@ -74,7 +78,19 @@ public class MonitorActivity extends TabActivity {
 						getResources().getDrawable(R.drawable.ic_bike))
 				.setContent(R.id.tab3));
 		mTabHost.setCurrentTab(0);
-
+ 
+		
+		String [] napisy = new String[3];
+		napisy[0] = "111";
+		napisy[1] = "222";
+		napisy[2] = "333";
+		//Set up the results list, see BNYAdapter
+        list = (ListView)findViewById(R.id.lvWorkouts);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, napisy);
+        list.setAdapter(adapter);
+		
+		
+		
 		// ---------------------------------------------
 		// Setup GPS
 		// ---------------------------------------------
@@ -203,7 +219,6 @@ public class MonitorActivity extends TabActivity {
 				context.addDistance(dist);
 				context.setSpeed(spd);
 			}
-
 		}
 
 		public void onProviderDisabled(String provider) {
