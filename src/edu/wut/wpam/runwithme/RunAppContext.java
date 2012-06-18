@@ -53,6 +53,11 @@ public class RunAppContext {
 		is_initialized = true;
 		is_static = false;
 		datasource.close();
+		
+		runActivity.workouts.add(new TimeWorkout(10));
+		runActivity.workouts.add(new TimeWorkout(8));
+		runActivity.workouts.add(new TimeWorkout(10));
+		runActivity.workouts.add(new Workout());
 	}
 	
 	public void initFromFile(RunActivity act) {
@@ -110,7 +115,7 @@ public class RunAppContext {
 	private float distance;
 	
 	public void addTrackPoint(TrackPoint pt) {
-		runActivity.getTrack().add(pt);
+		runActivity.add(pt);
 		notifyUI();
 	}
 	

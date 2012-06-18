@@ -13,6 +13,19 @@ public class Helper {
 		return String.format("%d:%02d:%02d", hh, mm, ss);
 	}
 	
+	static String formatTimeNice(float seconds) {
+		int hh = (int) Math.floor(seconds / 3600);
+		seconds = seconds - hh * 3600;
+		int mm = (int) Math.floor(seconds / 60);
+		seconds = seconds - mm * 60;
+		int ss = (int) Math.floor(seconds);
+		
+		if (hh > 0)
+			return String.format("%dh %02dm %02ds", hh, mm, ss);
+		else
+			return String.format("%dm %02ds", mm, ss);
+	}
+	
 	static ArrayList<PointF> calculateSpeed(ArrayList<TrackPoint> track, int skip) {
 		if (track == null || track.size() == 0)
 			return null;

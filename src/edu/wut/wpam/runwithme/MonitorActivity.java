@@ -1,5 +1,7 @@
 package edu.wut.wpam.runwithme;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -11,12 +13,17 @@ import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.text.format.Time;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,10 +32,15 @@ public class MonitorActivity extends TabActivity {
 	private TabHost mTabHost;
 
 	private Workout workout;
+
+	MediaPlayer mp = null;
+	private ArrayAdapter<Workout> adapter;
 	
 	private Timer myTimer;
 	MyLocationListener myLocationListener;
 	
+
+	private LayoutInflater mInflater;
 	ListView list;
 
 	private RunAppContext context = RunAppContext.instance();
@@ -50,6 +62,8 @@ public class MonitorActivity extends TabActivity {
 		setContentView(R.layout.main);
 
 		loadBundle(savedInstanceState);
+		
+		mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		// ---------------------------------------------
 		// Setup context
@@ -80,13 +94,38 @@ public class MonitorActivity extends TabActivity {
 		mTabHost.setCurrentTab(0);
  
 		
-		String [] napisy = new String[3];
-		napisy[0] = "111";
-		napisy[1] = "222";
-		napisy[2] = "333";
+		ArrayList<Workout> workouts = context.getActivity().workouts;
 		//Set up the results list, see BNYAdapter
         list = (ListView)findViewById(R.id.lvWorkouts);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, napisy);
+        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, napisy);
+        adapter = new ArrayAdapter<Workout>(this, R.layout.list_item, workouts) {
+			@Override
+			public View getView(int position, View convertView, ViewGroup parent) {
+				View row;
+
+				if (null == convertView) {
+					row = mInflater.inflate(R.layout.list_item_workout, null);
+				} else {
+					row = convertView;
+				}
+
+				TextView tv = (TextView) row.findViewById(R.id.tvWorkout);
+				tv.setText(getItem(position).getName());
+				tv = (TextView) row.findViewById(R.id.tvSummary);
+				tv.setText(getItem(position).getSummary());
+				ProgressBar pb = (ProgressBar) row.findViewById(R.id.pbProgress);
+				
+
+				if (getItem(position).finished()) {
+					pb.setProgress(100);
+				} else {
+					pb.setProgress((int) (100 * getItem(position).getProgress()));
+				}
+
+				
+				return row;
+			}
+		};
         list.setAdapter(adapter);
 		
 		
@@ -109,7 +148,7 @@ public class MonitorActivity extends TabActivity {
 				TimerMethod();
 			}
 
-		}, 0, 1000);
+		}, 0, 250);
 
 		// ---------------------------------------------
 		// Setup workout
@@ -132,8 +171,10 @@ public class MonitorActivity extends TabActivity {
 
 	@Override
 	public void onDestroy() {
+		myTimer.cancel();
 		LocationManager mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		mlocManager.removeUpdates(myLocationListener);
+		
 		super.onDestroy();
 	}
 
@@ -176,6 +217,38 @@ public class MonitorActivity extends TabActivity {
 //			Plot plot = (Plot) findViewById(R.id.simplePlot);
 //			plot.setMarker(workout.getTime());
 //			plot.invalidate();
+			if (context != null) {
+				context.getActivity().update();
+				adapter.notifyDataSetChanged();
+				
+				int snd_id = context.getActivity().getSound(); 
+				if (snd_id > 0) {
+					System.out.println(snd_id);
+					// play sounds according to progress of workout
+					// 1 - intermediate
+					// 2 - finished
+					// 3 - countdown
+					switch (snd_id) {
+					case 1: 
+						mp = MediaPlayer.create(MonitorActivity.this, R.raw.beep);
+						break;
+					case 2:
+						mp = MediaPlayer.create(MonitorActivity.this, R.raw.checkpoint);
+						break;
+					case 3:
+						mp = MediaPlayer.create(MonitorActivity.this, R.raw.beeps);
+						break;
+					}
+					
+			        mp.start();
+			        mp.setOnCompletionListener(new OnCompletionListener() {
+			            public void onCompletion(MediaPlayer mp) {
+			                // TODO Auto-generated method stub
+			                mp.release();
+			            }
+			        });   
+				}
+			}
 		}
 	};
 

@@ -15,27 +15,6 @@
         android:text="@string/welcome_logbook"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <LinearLayout
-        android:id="@+id/group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add New" 
-            android:onClick="onClick"/>
-
-        <Button
-            android:id="@+id/delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Delete First" 
-            android:onClick="onClick"/>
-        
-    </LinearLayout>
-
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"

@@ -125,28 +125,28 @@ public class TestDatabaseActivity extends ListActivity {
 
 	// Will be called via the onClick attribute
 	// of the buttons in main.xml
-	public void onClick(View view) {
-		@SuppressWarnings("unchecked")
-		ArrayAdapter<RunActivity> adapter = (ArrayAdapter<RunActivity>) getListAdapter();
-		RunActivity act = null;
-		switch (view.getId()) {
-		case R.id.add:
-			datasource.open();
-			// Save the new comment to the database
-			act = datasource.createRunActivity(System.currentTimeMillis(), 523);
-			adapter.add(act);
-			datasource.close();
-			break;
-		case R.id.delete:
-			if (getListAdapter().getCount() > 0) {
-				act = (RunActivity) getListAdapter().getItem(0);
-				datasource.deleteActivity(act);
-				adapter.remove(act);
-			}
-			break;
-		}
-		adapter.notifyDataSetChanged();
-	}
+//	public void onClick(View view) {
+//		@SuppressWarnings("unchecked")
+//		ArrayAdapter<RunActivity> adapter = (ArrayAdapter<RunActivity>) getListAdapter();
+//		RunActivity act = null;
+//		switch (view.getId()) {
+//		case R.id.add:
+//			datasource.open();
+//			// Save the new comment to the database
+//			act = datasource.createRunActivity(System.currentTimeMillis(), 523);
+//			adapter.add(act);
+//			datasource.close();
+//			break;
+//		case R.id.delete:
+//			if (getListAdapter().getCount() > 0) {
+//				act = (RunActivity) getListAdapter().getItem(0);
+//				datasource.deleteActivity(act);
+//				adapter.remove(act);
+//			}
+//			break;
+//		}
+//		adapter.notifyDataSetChanged();
+//	}
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
