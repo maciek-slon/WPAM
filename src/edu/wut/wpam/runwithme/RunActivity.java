@@ -94,7 +94,9 @@ public class RunActivity {
 	}
 
 	public void add(TrackPoint pt) {
-		current_workout.update(pt);
+		track.add(pt);
+		if (current_workout != null)
+			current_workout.update(pt);
 	}
 
 	public int getSound() {

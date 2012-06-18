@@ -12,10 +12,13 @@
     <string name="welcome_logbook">Zapisane treningi</string>
 
     <string-array name="act_menu">
-        <item>Usuń</item>
+        <item>Udostępnij</item><item>Usuń</item>
+        
     </string-array>
         <string name="speed">Prędkość</string>
         <string name="monitor_showmap">Wyświetl mapę</string>
         <string name="monitor_addworkout">Dodaj trening</string>
+        <string name="welcome_share">Udostępnianie</string>
+        <string name="welcome_achieved">Osiągnięcia</string>
 
 </resources>

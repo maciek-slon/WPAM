@@ -5,14 +5,15 @@
     android:versionName="1.0" >
 
     <uses-sdk android:minSdkVersion="10" />
-    
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-	
+
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <uses-library android:name="com.google.android.maps" />
+
         <activity
             android:name=".WelcomeActivity"
             android:label="@string/app_name" >
@@ -22,14 +23,47 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".IntervalPickerActivity\"></activity>
-        <activity android:name=".MonitorActivity"></activity>
-        <activity android:name=".LogActivity"></activity>
-        <activity android:name=".TestDatabaseActivity"></activity>
-        <activity android:name=".StopwatchActivity"></activity>
-        <activity android:name=".AchievedActivity"></activity>
-        <activity android:name=".RouteActivity" android:label="@string/app_name"
-     			  android:theme="@android:style/Theme.NoTitleBar"/>
+        
+        <activity android:name=".IntervalPickerActivity\" >
+        </activity>
+        
+        <activity android:name=".MonitorActivity" >
+        </activity>
+        
+        <activity android:name=".LogActivity" >
+        </activity>
+        
+        <activity android:name=".TestDatabaseActivity" >
+        </activity>
+        
+        <activity android:name=".StopwatchActivity" >
+        </activity>
+        
+        <activity android:name=".AchievedActivity" >
+        </activity>
+                
+        <activity android:name=".ShareActivity" android:noHistory="true" >
+        </activity>
+        
+        <activity
+            android:name=".RouteActivity"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.NoTitleBar" />
+        
+        <activity
+            android:name="com.dropbox.client2.android.AuthActivity"
+            android:configChanges="orientation|keyboard"
+            android:launchMode="singleTask" >
+            <intent-filter>
+                <data android:scheme="db-e7szaohaboil8tz" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
     </application>
 
 </manifest>

@@ -1,9 +1,25 @@
 package edu.wut.wpam.runwithme;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.dropbox.client2.DropboxAPI;
+import com.dropbox.client2.DropboxAPI.Entry;
+import com.dropbox.client2.android.AndroidAuthSession;
+import com.dropbox.client2.exception.DropboxException;
+import com.dropbox.client2.exception.DropboxUnlinkedException;
+import com.dropbox.client2.session.AccessTokenPair;
+import com.dropbox.client2.session.AppKeyPair;
+import com.dropbox.client2.session.Session.AccessType;
+
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -16,6 +32,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,6 +50,14 @@ public class TestDatabaseActivity extends ListActivity {
 	ArrayAdapter<RunActivity> adapter;
 	SimpleDateFormat formatter = new SimpleDateFormat("d MMMM yyyy, H:mm");
 
+	
+	
+	final static private String APP_KEY = "e7szaohaboil8tz";
+	final static private String APP_SECRET = "3dd4zibca09t6ih";
+	final static private AccessType ACCESS_TYPE = AccessType.DROPBOX;
+	
+	
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -174,6 +199,105 @@ public class TestDatabaseActivity extends ListActivity {
 		RunActivity act = values.get(info.position);
 
 		if (menuItemIndex == 0) {
+			System.out.println("SHARE!");
+
+			AccessTokenPair tokens;
+	        
+	        AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
+	        AndroidAuthSession session = new AndroidAuthSession(appKeys, ACCESS_TYPE);
+	        DropboxAPI<AndroidAuthSession> mDBApi = new DropboxAPI<AndroidAuthSession>(session);
+	        
+			SharedPreferences settings = getSharedPreferences("RUNWITHME_DROPBOX", 0);
+	        boolean connected = settings.getBoolean("connected", false);
+	        if (connected) {
+	        	String key = settings.getString("key", "");
+	        	String secret = settings.getString("secret", "");
+	        	tokens = new AccessTokenPair(key, secret);
+	            mDBApi.getSession().setAccessTokenPair(tokens);
+	            
+	            String FILENAME = "" + act.getDate();
+	    		String data = "";
+
+	    		
+	    		try {
+		    		FileInputStream fis = openFileInput(FILENAME);
+		    		FileOutputStream fos = openFileOutput("tmp.kml", MODE_WORLD_READABLE);
+		    		BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+		    		
+		    		
+		    		String line = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
+		    				+ "<kml xmlns=\"http://earth.google.com/kml/2.0\">"
+		    				+ "<Document>"
+		    				+ "	<name>KML Example file</name>"
+		    				+ "	<description>Simple markers</description>"
+		    				+ " <Placemark>"
+		    				+ " <name>Polyline 1</name>"
+		    				+ " <description>This is some info about polyline 1</description>"
+		    				+ " "
+		    			    + " <Style>"
+		    			    + "   <LineStyle>"
+		    			    + "     <color>ff00ff00</color>"
+		    			    + "     <width>6</width>"
+		    			    + "   </LineStyle>"
+		    			    + " </Style>"
+		    			    + " "
+		    			    + " <LineString><coordinates>";
+		  
+		    		fos.write(line.getBytes());
+		    		
+		    		do {
+		    			data = reader.readLine();
+		    			if (data == null) break;
+		    			String[] nums = data.split(";");
+		    			TrackPoint tp = new TrackPoint(0, 0, 0, 0);
+		    			
+		    			tp.tim = Long.parseLong(nums[0]);
+		    			tp.lat = Integer.parseInt(nums[1]);
+		    			tp.lon = Integer.parseInt(nums[2]);
+		    			tp.alt = Integer.parseInt(nums[3]);
+		    					    			
+		    			
+		    			line = " " + 0.000001 * tp.lon + "," + 0.000001 * tp.lat + ",0 ";  
+		                fos.write(line.getBytes());
+		    			
+		    		} while(true);
+		    		
+		    		line = "</coordinates></LineString></Placemark></Document></kml>";
+
+		    		
+		    		fis.close();
+	                fos.close();
+	    		} catch(IOException e) {
+	    			
+	    		}
+	            
+	            // Uploading content.
+	            FileInputStream inputStream = null;
+	            try {
+	            	
+	                inputStream = openFileInput("tmp.kml");
+	                Entry newEntry = mDBApi.putFile("/Public/" + act.getDate() + ".kml", inputStream, 7, null, null);
+	                Log.i("DbExampleLog", "The uploaded file's rev is: " + newEntry.rev);
+	            } catch (DropboxUnlinkedException e) {
+	                // User has unlinked, ask them to link again here.
+	                Log.e("DbExampleLog", "User has unlinked.");
+	            } catch (DropboxException e) {
+	                Log.e("DbExampleLog", "Something went wrong while uploading.");
+	            } catch (FileNotFoundException e) {
+	                Log.e("DbExampleLog", "File not found.");
+	            } catch (IOException e) {
+	            	Log.e("DbExampleLog", "Other error");
+	    		} finally {
+	                if (inputStream != null) {
+	                    try {
+	                        inputStream.close();
+	                    } catch (IOException e) {}
+	                }
+	            }
+	        }
+		}
+		
+		if (menuItemIndex == 1) {
 			System.out.println("DELETE!");
 			datasource.open();
 			datasource.deleteActivity(act);
