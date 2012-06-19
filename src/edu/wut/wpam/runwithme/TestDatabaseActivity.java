@@ -286,7 +286,6 @@ public class TestDatabaseActivity extends ListActivity {
 	    		} catch(IOException e) {
 	    			
 	    		}
-	            
 
 	    		// Metadata -- check, if file already exists and get it's rev (necessary for uploading deleted file)
 	    		Entry existingEntry = null;
@@ -305,7 +304,6 @@ public class TestDatabaseActivity extends ListActivity {
 		            // Uploading content.
 		            FileInputStream inputStream = null;
 		            try {
-		            	
 		                inputStream = openFileInput("tmp.kml");
 		                Log.i("DbExampleLog", "Sending file. Size: " + size);
 		                Entry newEntry = mDBApi.putFile("/Public/" + act.getDate() + ".kml", inputStream, size, rev, null);
@@ -313,10 +311,13 @@ public class TestDatabaseActivity extends ListActivity {
 		            } catch (DropboxUnlinkedException e) {
 		                // User has unlinked, ask them to link again here.
 		                Log.e("DbExampleLog", "User has unlinked.");
+		                showMessage("Błąd", "Nie jesteś połączony z usługą Dropbox");
 		            } catch  (DropboxServerException e) {
 		    			Log.e("DbExampleLog", "Something went wrong while uploading. Server: " + e.reason);
+		                showMessage("Błąd", "Wysłanie pliku nie powiodło się. " + e.reason);
 		    		} catch (DropboxException e) {
 		                Log.e("DbExampleLog", "Something went wrong while uploading.");
+		                showMessage("Błąd", "Wysłanie pliku nie powiodło się.");
 		            } catch (FileNotFoundException e) {
 		                Log.e("DbExampleLog", "File not found.");
 		    		} finally {
@@ -326,7 +327,11 @@ public class TestDatabaseActivity extends ListActivity {
 		                    } catch (IOException e) {}
 		                }
 		            }
+	    		} else {
+	    			 showMessage("Błąd", "Nie można wysłać pliku");
 	    		}
+	        } else {
+	        	showMessage("Błąd", "Nie jesteś połączony z usługą Dropbox");
 	        }
 		}
 		
@@ -341,6 +346,20 @@ public class TestDatabaseActivity extends ListActivity {
 		return true;
 	}
 
+	protected void showMessage(String title, String msg) {
+		AlertDialog alertDialog;
+		alertDialog = new AlertDialog.Builder(this).create();
+		alertDialog.setTitle(title);
+		alertDialog.setMessage(msg);
+		alertDialog.setCancelable(false);
+		alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int which) {  
+		        dialog.dismiss();                      
+		    }  
+		});  
+		alertDialog.show();
+	}
+	
 	@Override
 	protected void onResume() {
 		super.onResume();

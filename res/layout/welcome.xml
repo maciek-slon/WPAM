@@ -15,14 +15,6 @@
         android:textSize="20dp" />
 
     <Button
-        android:id="@+id/btnStopwatch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_distance"
-        android:text="@string/welcome_stopwatch"
-        android:textSize="20dp" />
-
-    <Button
         android:id="@+id/btnDatabase"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,6 +27,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/welcome_achieved"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/btnStopwatch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_intervals"
+        android:text="@string/welcome_stopwatch"
         android:textSize="20dp" />
 
     <Button
