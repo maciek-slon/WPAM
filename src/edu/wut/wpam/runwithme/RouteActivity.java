@@ -1,6 +1,5 @@
 package edu.wut.wpam.runwithme;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,7 +88,6 @@ public class RouteActivity extends MapActivity {
 		
 		Drawable start = this.getResources().getDrawable(R.drawable.marker_start);
 		itemizedOverlay = new MyItemizedOverlay(start, this); 
-		
 		
 		mapOverlays = mapView.getOverlays();
 		mapOverlays.add(new MyOverlay());
@@ -220,6 +218,11 @@ public class RouteActivity extends MapActivity {
 
 			long lasttime = track.get(0).tim;
 
+			Point p1 = new Point();
+			Point p2 = p1;
+
+			Rect r =  new Rect(0, 0, mapView.getWidth(), mapView.getHeight());
+			
 			for (int i = 0; i < track.size(); ++i) {
 				
 				if (track.get(i).tim - lasttime < 0) break;
@@ -227,15 +230,23 @@ public class RouteActivity extends MapActivity {
 				int lat = track.get(i).lat;
 				int lon = track.get(i).lon;
 				GeoPoint gP1 = new GeoPoint(lat, lon);
-				Point p1 = new Point();
 				projection.toPixels(gP1, p1);
-
+				
 				if (i == 0) {
 					path.moveTo(p1.x, p1.y);
 					min_lat = max_lat = lat;
 					min_lon = max_lat = lon;
+					p2 = p1;
 				} else {
-					path.lineTo(p1.x, p1.y);
+					// draw only visible part of path
+					if (r.contains(p1.x, p1.y) || r.contains(p2.x, p2.y) )
+						path.lineTo(p1.x, p1.y);
+					else 
+						path.moveTo(p1.x, p1.y);
+					
+					
+					p2 = p1;
+					
 					if (lat < min_lat)
 						min_lat = lat;
 					if (lon < min_lon)
@@ -262,6 +273,7 @@ public class RouteActivity extends MapActivity {
 					break;
 				}	
 			}
+			itemizedOverlay.clear();
 			itemizedOverlay.addOverlayItem(track.get(0).lat, track.get(0).lon, "I'm here", R.drawable.marker_start);
 			itemizedOverlay.addOverlayItem(last_lat, last_lon, "I'm here", R.drawable.marker_end);
 			canvas.drawPath(path, mPaint);
@@ -277,6 +289,11 @@ public class RouteActivity extends MapActivity {
 		public MyItemizedOverlay(Drawable defaultMarker) {
 			super(boundCenterBottom(defaultMarker));
 			myOverlays = new ArrayList<OverlayItem>();
+			populate();
+		}
+
+		public void clear() {
+			myOverlays.clear();
 			populate();
 		}
 

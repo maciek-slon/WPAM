@@ -2,8 +2,6 @@ package edu.wut.wpam.runwithme;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;

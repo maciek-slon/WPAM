@@ -20,5 +20,6 @@
         <string name="monitor_addworkout">Dodaj trening</string>
         <string name="welcome_share">Udostępnianie</string>
         <string name="welcome_achieved">Osiągnięcia</string>
+        <string name="elevation">Wysokość</string>
 
 </resources>

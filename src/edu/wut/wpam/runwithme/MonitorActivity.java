@@ -287,6 +287,16 @@ public class MonitorActivity extends TabActivity {
 				Plot plot = (Plot) findViewById(R.id.simplePlot);
 				plot.add(new PointF(context.getTime(), spd));
 				plot.invalidate();
+				
+				plot = (Plot) findViewById(R.id.elevationPlot);
+				plot.add(new PointF(context.getTime(), (float)loc.getAltitude()));
+				plot.invalidate();
+				
+				TextView tv = (TextView) findViewById(R.id.tvCurSpeed);
+				tv.setText(String.format("%.2f km/h", spd));
+				
+				tv = (TextView) findViewById(R.id.tvCurElev);
+				tv.setText(String.format("%.0f mnpm", (float)loc.getAltitude()));
 
 				context.addTrackPoint(tp);
 				context.addDistance(dist);

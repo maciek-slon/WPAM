@@ -1,9 +1,5 @@
 package edu.wut.wpam.runwithme;
 
-import android.content.Context;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
-
 public class Workout {
 	protected int type;
 	protected long starttime;

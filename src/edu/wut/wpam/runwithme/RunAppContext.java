@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.os.Environment;
 import android.view.View;
 
 public class RunAppContext {
@@ -54,9 +53,9 @@ public class RunAppContext {
 		is_static = false;
 		datasource.close();
 		
-		runActivity.workouts.add(new TimeWorkout(10));
+		/*runActivity.workouts.add(new TimeWorkout(10));
 		runActivity.workouts.add(new TimeWorkout(8));
-		runActivity.workouts.add(new TimeWorkout(10));
+		runActivity.workouts.add(new TimeWorkout(10));*/
 		runActivity.workouts.add(new Workout());
 	}
 	
@@ -170,7 +169,7 @@ public class RunAppContext {
 			tp.lon = Integer.parseInt(nums[2]);
 			tp.alt = Integer.parseInt(nums[3]);
 			
-			//System.out.println(tp.tim);
+			System.out.println(tp.alt);
 			
 			if (inittime == 0) inittime = tp.tim;
 			lasttime = tp.tim;

@@ -20,6 +20,72 @@
             android:layout_height="fill_parent" >
 
             <LinearLayout
+                android:id="@+id/tab1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/textView1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/speed" />
+
+                    <TextView
+                        android:id="@+id/tvCurSpeed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text=""
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                </LinearLayout>
+
+                <edu.wut.wpam.widgets.Plot
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/simplePlot"
+                    android:layout_width="fill_parent"
+                    android:layout_height="80dp" android:layout_marginBottom="10dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/elevation" />
+
+                    <TextView
+                        android:id="@+id/tvCurElev"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text=""
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                </LinearLayout>
+
+                <edu.wut.wpam.widgets.Plot
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/elevationPlot"
+                    android:layout_width="fill_parent"
+                    android:layout_height="80dp" />
+
+                <Button
+                    android:id="@+id/btnShowMap"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_show_map"
+                    android:text="@string/monitor_showmap" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/tab2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -39,26 +105,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/monitor_addworkout" />
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/tab1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical" >
-
-                <edu.wut.wpam.widgets.Plot
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/simplePlot"
-                    android:layout_width="fill_parent"
-                    android:layout_height="80dp" />
-
-                <Button
-                    android:id="@+id/btnShowMap"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_show_map"
-                    android:text="@string/monitor_showmap" />
             </LinearLayout>
 
             <FrameLayout

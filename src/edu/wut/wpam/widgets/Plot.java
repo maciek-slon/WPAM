@@ -21,6 +21,7 @@ public class Plot extends View {
 
 	private ArrayList<PointF> elems;
 	private float elem_max;
+	private float elem_min;
 
 	private float x_start;
 	private float x_end;
@@ -71,6 +72,7 @@ public class Plot extends View {
 
 	private void init() {
 		elem_max = 0.0f;
+		elem_min = 1000f;
 
 		x_start = 0.0f;
 		x_end = 1800.0f;
@@ -102,6 +104,7 @@ public class Plot extends View {
 		x_end = 10;
 		for (PointF elem : points) {
 			if (elem.y > elem_max) elem_max = elem.y;
+			if (elem.y < elem_min) elem_min = elem.y;
 			if (elem.x > x_end)	x_end = elem.x;
 		}
 		
@@ -113,6 +116,11 @@ public class Plot extends View {
 
 		if (elem.y > elem_max) {
 			elem_max = elem.y;
+			recalculateScales();
+		}
+		
+		if (elem.y < elem_min) {
+			elem_min = elem.y;
 			recalculateScales();
 		}
 
@@ -154,6 +162,10 @@ public class Plot extends View {
 		if (elem_max > y_end) {
 			y_end = (float) (Math.floor(elem_max / 5) * 5 + 5);
 		}
+		
+//		if (elem_min < y_start) {
+			y_start = (float) (Math.floor(elem_min / 5) * 5);
+//}
 
 		x_range = x_end - x_start;
 		y_range = y_end - y_start;
@@ -177,8 +189,7 @@ public class Plot extends View {
 		float y_tick = y_range / 5;
 		for (int i = 0; i <= 5; ++i) {
 			float y = Math.round(getHeight() - y_origin - i * y_tick * y_scale);
-			canvas.drawText(Float.toString(y_start + i * y_tick), x_origin - 2,
-					y + 5, paint);
+			canvas.drawText(String.format("%.0f", y_start + i * y_tick), x_origin - 2, y + 5, paint);
 			canvas.drawLine(x_origin, y, getWidth(), y, paint);
 		}
 	}
@@ -217,7 +228,7 @@ public class Plot extends View {
 				break;
 		}
 		paint.setAlpha(128);
-		path.lineTo(e.x, 0);
+		path.lineTo(e.x, y_start);
 		path.close();
 		canvas.drawPath(path, paint);
 	}
@@ -247,6 +258,7 @@ public class Plot extends View {
 
 		canvas.translate(x_origin, getHeight() - y_origin);
 		canvas.scale(x_scale, -y_scale);
+		canvas.translate(-x_start, -y_start);
 
 		drawIntervals(canvas);
 		drawPlot(canvas);

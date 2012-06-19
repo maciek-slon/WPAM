@@ -14,6 +14,7 @@ import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.DropboxAPI.Entry;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
+import com.dropbox.client2.exception.DropboxServerException;
 import com.dropbox.client2.exception.DropboxUnlinkedException;
 import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
@@ -185,7 +186,8 @@ public class TestDatabaseActivity extends ListActivity {
 			String[] menuItems = getResources()
 					.getStringArray(R.array.act_menu);
 			for (int i = 0; i < menuItems.length; i++) {
-				menu.add(Menu.NONE, i, i, menuItems[i]);
+				MenuItem m = menu.add(Menu.NONE, i, i, menuItems[i]);
+				m.setIcon(R.drawable.ic_bike_nor);
 			}
 		}
 	}
@@ -206,7 +208,8 @@ public class TestDatabaseActivity extends ListActivity {
 	        AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
 	        AndroidAuthSession session = new AndroidAuthSession(appKeys, ACCESS_TYPE);
 	        DropboxAPI<AndroidAuthSession> mDBApi = new DropboxAPI<AndroidAuthSession>(session);
-	        
+
+    		int size = 0;
 			SharedPreferences settings = getSharedPreferences("RUNWITHME_DROPBOX", 0);
 	        boolean connected = settings.getBoolean("connected", false);
 	        if (connected) {
@@ -225,23 +228,27 @@ public class TestDatabaseActivity extends ListActivity {
 		    		BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
 		    		
 		    		
-		    		String line = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
-		    				+ "<kml xmlns=\"http://earth.google.com/kml/2.0\">"
-		    				+ "<Document>"
-		    				+ "	<name>KML Example file</name>"
-		    				+ "	<description>Simple markers</description>"
-		    				+ " <Placemark>"
-		    				+ " <name>Polyline 1</name>"
-		    				+ " <description>This is some info about polyline 1</description>"
-		    				+ " "
-		    			    + " <Style>"
-		    			    + "   <LineStyle>"
-		    			    + "     <color>ff00ff00</color>"
-		    			    + "     <width>6</width>"
-		    			    + "   </LineStyle>"
-		    			    + " </Style>"
-		    			    + " "
-		    			    + " <LineString><coordinates>";
+		    		String line = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" 
+		    				+ "<kml xmlns=\"http://earth.google.com/kml/2.0\">\n"
+		    				+ "\n"
+		    				+ "<Document>\n"
+		    				+ "  <name>RunWithMe</name>\n"
+		    				+ "  <description>Zapis trasy</description>\n"
+		    				+ "  <Placemark>\n"
+		    				+ "    <name>" + formatter.format(new Date(act.getDate())) + "</name>\n"
+		    				+ "    <description>" + String.format("%.2fkm", 0.001f * act.getSummary()) + "</description>\n"
+		    				+ "\n"
+		    			    + "    <Style>\n"
+		    			    + "      <LineStyle>\n"
+		    			    + "        <color>80800000</color>\n"
+		    			    + "        <width>3</width>\n"
+		    			    + "      </LineStyle>\n"
+		    			    + "    </Style>\n"
+		    			    + "\n"
+		    			    + "    <LineString>\n"
+		    			    + "      <coordinates>\n";
+		    		
+		    		size += line.getBytes().length;
 		  
 		    		fos.write(line.getBytes());
 		    		
@@ -257,12 +264,21 @@ public class TestDatabaseActivity extends ListActivity {
 		    			tp.alt = Integer.parseInt(nums[3]);
 		    					    			
 		    			
-		    			line = " " + 0.000001 * tp.lon + "," + 0.000001 * tp.lat + ",0 ";  
+		    			line = " " + 0.000001 * tp.lon + "," + 0.000001 * tp.lat + "," + tp.alt + " ";
+		    			size += line.getBytes().length;
 		                fos.write(line.getBytes());
 		    			
 		    		} while(true);
 		    		
-		    		line = "</coordinates></LineString></Placemark></Document></kml>";
+		    		line = "\n" +
+		    				"      </coordinates>\n" +
+		    				"    </LineString>\n" +
+		    				"  </Placemark>\n" +
+		    				"</Document>\n" +
+		    				"\n" +
+		    				"</kml>";
+	                fos.write(line.getBytes());
+		    		size += line.getBytes().length;
 
 		    		
 		    		fis.close();
@@ -271,29 +287,48 @@ public class TestDatabaseActivity extends ListActivity {
 	    			
 	    		}
 	            
-	            // Uploading content.
-	            FileInputStream inputStream = null;
-	            try {
-	            	
-	                inputStream = openFileInput("tmp.kml");
-	                Entry newEntry = mDBApi.putFile("/Public/" + act.getDate() + ".kml", inputStream, 7, null, null);
-	                Log.i("DbExampleLog", "The uploaded file's rev is: " + newEntry.rev);
-	            } catch (DropboxUnlinkedException e) {
-	                // User has unlinked, ask them to link again here.
-	                Log.e("DbExampleLog", "User has unlinked.");
-	            } catch (DropboxException e) {
-	                Log.e("DbExampleLog", "Something went wrong while uploading.");
-	            } catch (FileNotFoundException e) {
-	                Log.e("DbExampleLog", "File not found.");
-	            } catch (IOException e) {
-	            	Log.e("DbExampleLog", "Other error");
-	    		} finally {
-	                if (inputStream != null) {
-	                    try {
-	                        inputStream.close();
-	                    } catch (IOException e) {}
-	                }
-	            }
+
+	    		// Metadata -- check, if file already exists and get it's rev (necessary for uploading deleted file)
+	    		Entry existingEntry = null;
+	    		String rev = null;
+	    		try {
+	    		    existingEntry = mDBApi.metadata("/Public/" + act.getDate() + ".kml", 1, null, false, null);
+	    		    Log.i("DbExampleLog", "The file's rev is now: " + existingEntry.rev);
+	    		    rev = existingEntry.rev;
+	    		} catch  (DropboxServerException e) {
+	    			Log.e("DbExampleLog", "Something went wrong while getting metadata. Server: " + e.reason);
+	    		} catch (DropboxException e) {
+	    		    Log.e("DbExampleLog", "Something went wrong while getting metadata.");
+	    		}
+	    		
+	    		if (existingEntry == null || existingEntry.isDeleted) {
+		            // Uploading content.
+		            FileInputStream inputStream = null;
+		            try {
+		            	
+		                inputStream = openFileInput("tmp.kml");
+		                Log.i("DbExampleLog", "Sending file. Size: " + size);
+		                Entry newEntry = mDBApi.putFile("/Public/" + act.getDate() + ".kml", inputStream, size, rev, null);
+		                Log.i("DbExampleLog", "The uploaded file's rev is: " + newEntry.rev);
+		            } catch (DropboxUnlinkedException e) {
+		                // User has unlinked, ask them to link again here.
+		                Log.e("DbExampleLog", "User has unlinked.");
+		            } catch  (DropboxServerException e) {
+		    			Log.e("DbExampleLog", "Something went wrong while uploading. Server: " + e.reason);
+		    		} catch (DropboxException e) {
+		                Log.e("DbExampleLog", "Something went wrong while uploading.");
+		            } catch (FileNotFoundException e) {
+		                Log.e("DbExampleLog", "File not found.");
+		            } catch (IOException e) {
+		            	Log.e("DbExampleLog", "Other error");
+		    		} finally {
+		                if (inputStream != null) {
+		                    try {
+		                        inputStream.close();
+		                    } catch (IOException e) {}
+		                }
+		            }
+	    		}
 	        }
 		}
 		

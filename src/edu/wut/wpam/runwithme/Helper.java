@@ -55,4 +55,58 @@ public class Helper {
 		
 		return points;
 	}
+
+	public static TrackInfo calculateElev(ArrayList<TrackPoint> track,
+			int skip) {
+		
+		TrackInfo ret = new TrackInfo();
+		
+		ret.asc = 0.0f;
+		ret.desc = 0.0f;
+		ret.elev_profile = null;
+		
+		if (track == null || track.size() == 0)
+			return ret;
+		
+		
+		ArrayList<PointF> points = new ArrayList<PointF>();
+		long totaltime = 0;
+		long curtime = 0;
+		float alt = 0;
+		int cnt = 0;
+		float last_elev = 0;
+		TrackPoint last = track.get(0);
+		
+		for (int i = 1; i < track.size(); i += skip) {
+			alt = 0;
+			curtime = 0;
+			cnt = 0;
+			for (int j = i; (j < i + skip) && (j < track.size()); ++j) {
+				TrackPoint cur = track.get(j);
+				if (cur.tim - last.tim < 0) break;
+				alt += cur.alt;
+				cnt++;
+				curtime += cur.tim - last.tim;
+				last = track.get(j);
+			}
+			if (curtime <= 0) break;
+			totaltime += curtime;
+			float elev = alt / cnt;
+			
+			if (last_elev == 0)
+				last_elev = elev;
+			
+			float de = elev - last_elev;
+			if (de > 0)
+				ret.asc += de;
+			else
+				ret.desc -= de;
+			last_elev = elev;
+		
+			points.add(new PointF(0.001f * totaltime, elev));
+		}
+		
+		ret.elev_profile = points;
+		return ret;
+	}
 }

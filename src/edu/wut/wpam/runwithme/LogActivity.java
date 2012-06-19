@@ -53,6 +53,18 @@ public class LogActivity extends Activity {
 		Plot plot = (Plot)findViewById(R.id.logSpeedPlot);
 		int skip = (int) Math.ceil(0.005 * act.getTrack().size());
 		plot.setElems(Helper.calculateSpeed(act.getTrack(), skip));
+		float avg_spd;
+		if (context.getTime() < 1)
+			avg_spd = 0;
+		else
+			avg_spd = 3.6f * context.getDistance() / context.getTime();
+		setText(R.id.tvCurSpeed, String.format("~%.1f km/h", avg_spd));
+		
+		TrackInfo ti = Helper.calculateElev(act.getTrack(), skip); 
+		plot = (Plot)findViewById(R.id.logElevPlot);
+		plot.setElems(ti.elev_profile);
+		
+		setText(R.id.tvCurElev, String.format("+%.1fm, -%.1fm", ti.asc, ti.desc));
 	}
 
 	@Override
