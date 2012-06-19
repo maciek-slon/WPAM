@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.View;
 
 public class RunAppContext {
 	private static RunAppContext runAppContext = null;
 
 	private ActivityDataSource datasource;
-	private AchievementDataSource ach_datasource;
 	
 	private boolean is_initialized = false;
 	private boolean is_static = false;
@@ -43,7 +43,6 @@ public class RunAppContext {
 	public void setContext(Context ctx) {
 		context = ctx;
 		datasource = new ActivityDataSource(context);
-		ach_datasource = new AchievementDataSource(context);
 	}
 	
 	public void init() {
@@ -78,6 +77,7 @@ public class RunAppContext {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		computeAchievements();
 	}
 	
 	public void finish() {
@@ -100,10 +100,8 @@ public class RunAppContext {
 		datasource.updateActivity(runActivity);
 		datasource.close();
 		
-		ach_datasource.open();
-		List<Achievement> achievements = ach_datasource.getAllAchievements();
 		
-		ach_datasource.close();
+		computeAchievements();
 		
 		// save track to file
 		try {
@@ -111,6 +109,23 @@ public class RunAppContext {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void computeAchievements() {
+		SharedPreferences settings = context.getSharedPreferences("RUNWITHME_ACHIEVEMENTS", 0);
+        SharedPreferences.Editor editor = settings.edit();
+		
+		float tmp;
+		tmp = settings.getFloat("TopTime", 0);
+		if (getTime() > tmp) editor.putFloat("TopTime", getTime());
+		
+		tmp = settings.getFloat("TopDist", 0);
+		if (distance > tmp) editor.putFloat("TopDist", 0.001f * distance);
+		
+		tmp = settings.getFloat("TopAvg", 0);
+		float spd = 3.6f * distance / getTime(); 
+		if (spd > tmp) editor.putFloat("TopAvg", spd);
+        editor.commit();
 	}
 	
 	public boolean initialized() {

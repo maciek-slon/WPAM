@@ -77,12 +77,19 @@
                     android:layout_width="fill_parent"
                     android:layout_height="80dp" />
 
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="" android:layout_weight="1"/>
+
                 <Button
                     android:id="@+id/btnShowMap"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_show_map"
                     android:text="@string/monitor_showmap" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -106,18 +113,6 @@
                     android:text="@string/monitor_addworkout" />
 
             </LinearLayout>
-
-            <FrameLayout
-                android:id="@+id/tab3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-
-                <TextView
-                    android:id="@+id/textview1"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:text="this is a tab" />
-            </FrameLayout>
         </FrameLayout>
     </LinearLayout>
 

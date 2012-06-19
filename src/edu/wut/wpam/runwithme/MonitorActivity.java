@@ -78,19 +78,14 @@ public class MonitorActivity extends TabActivity {
 		mTabHost = getTabHost();
 		mTabHost.addTab(mTabHost
 				.newTabSpec("tab_test1")
-				.setIndicator("Bieg",
+				.setIndicator("Sesja",
 						getResources().getDrawable(R.drawable.ic_run))
 				.setContent(R.id.tab1));
 		mTabHost.addTab(mTabHost
 				.newTabSpec("tab_test2")
 				.setIndicator("Treningi",
-						getResources().getDrawable(R.drawable.ic_skate))
+						getResources().getDrawable(R.drawable.ic_workouts))
 				.setContent(R.id.tab2));
-		mTabHost.addTab(mTabHost
-				.newTabSpec("tab_test3")
-				.setIndicator("Rower",
-						getResources().getDrawable(R.drawable.ic_bike))
-				.setContent(R.id.tab3));
 		mTabHost.setCurrentTab(0);
  
 		

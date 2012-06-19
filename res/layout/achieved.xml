@@ -10,15 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical|center"
-        android:drawableRight="@drawable/ic_logbook_white"
+        android:drawableRight="@drawable/ic_medal_white"
         android:text="Osiągnięcia"
         android:textAppearance="?android:attr/textAppearanceLarge" android:layout_marginBottom="10dp"/>
 
+
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Najdłuższy dystans"
+        android:text="Największy dystans"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -27,7 +28,8 @@
         android:layout_height="wrap_content"
         android:gravity="right"
         android:text=""
-        android:textAppearance="?android:attr/textAppearanceMedium" android:layout_marginBottom="10dp"/>
+        android:textAppearance="?android:attr/textAppearanceLarge" android:layout_marginBottom="10dp"/>
+    
 
     <TextView
         android:id="@+id/textView4"
@@ -43,7 +45,7 @@
         android:layout_marginBottom="10dp"
         android:gravity="right"
         android:text=""
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     <TextView
         android:id="@+id/textView6"
@@ -58,21 +60,6 @@
         android:layout_height="wrap_content"
         android:gravity="right"
         android:text=""
-        android:textAppearance="?android:attr/textAppearanceMedium" android:layout_marginBottom="10dp"/>
-
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Największa prędkość"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/tvTopSpeed"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        android:text=""
-        android:textAppearance="?android:attr/textAppearanceMedium" android:layout_marginBottom="10dp"/>
+        android:textAppearance="?android:attr/textAppearanceLarge" android:layout_marginBottom="10dp"/>
 
 </LinearLayout>
