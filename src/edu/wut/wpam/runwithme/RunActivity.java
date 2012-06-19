@@ -73,6 +73,10 @@ public class RunActivity {
 					current_workout.stop();
 					current_workout = workouts.get(current_id);
 					current_workout.start();
+				} else {
+					if (current_workout.getType() != 0) {
+						workouts.add(new Workout());
+					}
 				}
 			}
 		}

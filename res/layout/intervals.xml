@@ -2,96 +2,57 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" android:padding="10dp">
-
+    android:orientation="vertical"
+    android:padding="10dp" >
+
     <TextView
         android:id="@+id/textView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:text="Trening interwałowy"
-        android:textAppearance="?android:attr/textAppearanceLarge" android:gravity="center_vertical|center" android:drawableRight="@drawable/ic_intervals_white"/>
- 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Profil"
-        android:textAppearance="?android:attr/textAppearanceMedium" android:layout_marginBottom="10dp"/>
+        android:drawableRight="@drawable/ic_intervals_white"
+        android:gravity="center_vertical|center"
+        android:text="Dodaj trening"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:gravity="center_vertical" android:layout_marginBottom="10dp">
-
-        <Spinner
-            android:id="@+id/cbIntervalType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:layout_weight="1"
-            android:prompt="@string/workout_prompt"/>
-
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:text="+" android:textSize="25dp"/>
-
-    </LinearLayout>
-
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dzień 5 z 30"
+        android:text="Dystans (m)"
         android:textAppearance="?android:attr/textAppearanceMedium" android:layout_marginBottom="10dp"/>
-
-    <ProgressBar
-        android:id="@+id/progressBar1"
-        style="?android:attr/progressBarStyleHorizontal"
+
+    <edu.wut.wpam.widgets.NumberPicker
+        android:id="@+id/pickDist"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:max="30" android:progress="5" android:layout_marginBottom="10dp"/>
-
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+    </edu.wut.wpam.widgets.NumberPicker>
+
+    <Button
+        android:id="@+id/btnAddDist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Dodaj" android:layout_marginBottom="15dp"/>
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Charakterystyka"
+        android:text="Czas (min)"
         android:textAppearance="?android:attr/textAppearanceMedium" android:layout_marginBottom="10dp"/>
 
-    <edu.wut.wpam.widgets.Plot
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/simplePlot"
-        android:layout_width="fill_parent"
-        android:layout_height="80dp" android:layout_marginBottom="10dp" android:layout_weight="1"/>
-
-    <LinearLayout
+    <edu.wut.wpam.widgets.NumberPicker
+        android:id="@+id/pickTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center" >
-
-        <Button
-            android:id="@+id/btnPrevDay"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:text="&lt;"
-            android:textSize="25dp" />
-
-        <Button
-            android:id="@+id/btnGo"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Rozpocznij bieg" />
-
-        <Button
-            android:id="@+id/btnNextDay"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:text=">"
-            android:textSize="25dp" />
+        android:orientation="horizontal" >
+    </edu.wut.wpam.widgets.NumberPicker>
 
-    </LinearLayout>
+    <Button
+        android:id="@+id/btnAddTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Dodaj" />
 
 </LinearLayout>
-
-
-

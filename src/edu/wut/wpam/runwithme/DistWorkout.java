@@ -66,7 +66,7 @@ public class DistWorkout extends Workout {
 	
 	@Override
 	public String getSummary() {
-		return String.format("%.0fkm", distance);
+		return String.format("%.0fm", distance);
 	}
 	
 	@Override

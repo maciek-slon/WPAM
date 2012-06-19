@@ -110,10 +110,16 @@ public class MonitorActivity extends TabActivity {
 				}
 
 				TextView tv = (TextView) row.findViewById(R.id.tvWorkout);
+				/*switch (getItem(position).getType()) {
+				case 0:
+					setCompoundDrawablesWithIntrinsicBounds
+				}*/
 				tv.setText(getItem(position).getName());
+				
 				tv = (TextView) row.findViewById(R.id.tvSummary);
 				tv.setText(getItem(position).getSummary());
 				ProgressBar pb = (ProgressBar) row.findViewById(R.id.pbProgress);
+				
 				
 
 				if (getItem(position).finished()) {

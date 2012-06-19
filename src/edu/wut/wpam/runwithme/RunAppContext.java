@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.view.View;
@@ -14,6 +15,7 @@ public class RunAppContext {
 	private static RunAppContext runAppContext = null;
 
 	private ActivityDataSource datasource;
+	private AchievementDataSource ach_datasource;
 	
 	private boolean is_initialized = false;
 	private boolean is_static = false;
@@ -41,6 +43,7 @@ public class RunAppContext {
 	public void setContext(Context ctx) {
 		context = ctx;
 		datasource = new ActivityDataSource(context);
+		ach_datasource = new AchievementDataSource(context);
 	}
 	
 	public void init() {
@@ -96,6 +99,11 @@ public class RunAppContext {
 		runActivity.setSummary((long) distance);
 		datasource.updateActivity(runActivity);
 		datasource.close();
+		
+		ach_datasource.open();
+		List<Achievement> achievements = ach_datasource.getAllAchievements();
+		
+		ach_datasource.close();
 		
 		// save track to file
 		try {

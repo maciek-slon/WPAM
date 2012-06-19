@@ -8,6 +8,7 @@ public class Workout {
 	public Workout() {
 		starttime = 0;
 		length = 0;
+		type = 0;
 	}
 	
 	public boolean finished() {
@@ -57,5 +58,9 @@ public class Workout {
 
 	public int getSound() {
 		return 0;
+	}
+	
+	public int getType() {
+		return type;
 	}
 }

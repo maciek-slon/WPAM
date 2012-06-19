@@ -58,8 +58,8 @@ public class NumberPicker extends LinearLayout {
 	private final int ELEMENT_HEIGHT = 100;
 	private final int ELEMENT_WIDTH = ELEMENT_HEIGHT; // you're all squares, yo
 	
-	private final int MINIMUM = 0;
-	private final int MAXIMUM = 999;
+	private int MINIMUM = 0;
+	private int MAXIMUM = 999;
 	
 	public Integer value;
 	
@@ -71,6 +71,8 @@ public class NumberPicker extends LinearLayout {
 	
 	private boolean autoIncrement = false;
 	private boolean autoDecrement = false;
+
+	private Integer value_increment;
 
 	/**
 	 * This little guy handles the auto part of the auto incrementing feature.
@@ -153,6 +155,7 @@ public class NumberPicker extends LinearLayout {
 	private void initValueEditText( Context context){
 		
 		value = new Integer( 0 );
+		value_increment = new Integer( 1 );
 		
 		valueText = new EditText( context );
 		valueText.setTextSize(25);
@@ -229,14 +232,14 @@ public class NumberPicker extends LinearLayout {
 	
 	public void increment(){
 		if( value < MAXIMUM ){
-			value = value + 1;
+			value = value + value_increment;
 			valueText.setText( value.toString() );
 		}
 	}
 
 	public void decrement(){
 		if( value > MINIMUM ){
-			value = value - 1;
+			value = value - value_increment;
 			valueText.setText( value.toString() );
 		}
 	}
@@ -251,6 +254,15 @@ public class NumberPicker extends LinearLayout {
 			this.value = value;
 			valueText.setText( this.value.toString() );
 		}
+	}
+	
+	public void setIncrement(Integer inc) {
+		value_increment = inc;
+	}
+	
+	public void setRange(int min, int max) {
+		MINIMUM = min;
+		MAXIMUM = max;
 	}
 	
 }
