@@ -319,8 +319,6 @@ public class TestDatabaseActivity extends ListActivity {
 		                Log.e("DbExampleLog", "Something went wrong while uploading.");
 		            } catch (FileNotFoundException e) {
 		                Log.e("DbExampleLog", "File not found.");
-		            } catch (IOException e) {
-		            	Log.e("DbExampleLog", "Other error");
 		    		} finally {
 		                if (inputStream != null) {
 		                    try {

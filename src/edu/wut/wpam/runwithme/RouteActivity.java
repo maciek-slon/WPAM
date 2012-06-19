@@ -219,7 +219,7 @@ public class RouteActivity extends MapActivity {
 			long lasttime = track.get(0).tim;
 
 			Point p1 = new Point();
-			Point p2 = p1;
+			Point p2 = new Point();
 
 			Rect r =  new Rect(0, 0, mapView.getWidth(), mapView.getHeight());
 			
@@ -236,7 +236,8 @@ public class RouteActivity extends MapActivity {
 					path.moveTo(p1.x, p1.y);
 					min_lat = max_lat = lat;
 					min_lon = max_lat = lon;
-					p2 = p1;
+					p2.x = p1.x;
+					p2.y = p2.y;
 				} else {
 					// draw only visible part of path
 					if (r.contains(p1.x, p1.y) || r.contains(p2.x, p2.y) )
@@ -245,7 +246,8 @@ public class RouteActivity extends MapActivity {
 						path.moveTo(p1.x, p1.y);
 					
 					
-					p2 = p1;
+					p2.x = p1.x;
+					p2.y = p1.y;
 					
 					if (lat < min_lat)
 						min_lat = lat;

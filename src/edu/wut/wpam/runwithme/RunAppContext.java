@@ -169,7 +169,7 @@ public class RunAppContext {
 			tp.lon = Integer.parseInt(nums[2]);
 			tp.alt = Integer.parseInt(nums[3]);
 			
-			System.out.println(tp.alt);
+			//System.out.println(tp.alt);
 			
 			if (inittime == 0) inittime = tp.tim;
 			lasttime = tp.tim;

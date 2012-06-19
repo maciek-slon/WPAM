@@ -72,7 +72,7 @@ public class Plot extends View {
 
 	private void init() {
 		elem_max = 0.0f;
-		elem_min = 1000f;
+		elem_min = 0.0f;
 
 		x_start = 0.0f;
 		x_end = 1800.0f;
@@ -100,6 +100,7 @@ public class Plot extends View {
 			return;
 		
 		elems = points;
+		elem_min = points.get(0).y;
 		
 		x_end = 10;
 		for (PointF elem : points) {
@@ -113,6 +114,9 @@ public class Plot extends View {
 
 	public void add(PointF elem) {
 		elems.add(elem);
+		
+		if (elems.size() == 1)
+			elem_min = elem.y;
 
 		if (elem.y > elem_max) {
 			elem_max = elem.y;
