@@ -10,6 +10,7 @@ import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -89,6 +90,10 @@ public class MonitorActivity extends TabActivity {
 		mTabHost.setCurrentTab(0);
  
 		
+		final Drawable ic_time = getResources().getDrawable(R.drawable.ic_intervals_white_shadow);
+		final Drawable ic_dist = getResources().getDrawable(R.drawable.ic_distance_white_shadow);
+		final Drawable ic_free = getResources().getDrawable(R.drawable.ic_runner_white_shadow);
+		
 		ArrayList<Workout> workouts = context.getActivity().workouts;
 		//Set up the results list, see BNYAdapter
         list = (ListView)findViewById(R.id.lvWorkouts);
@@ -105,10 +110,16 @@ public class MonitorActivity extends TabActivity {
 				}
 
 				TextView tv = (TextView) row.findViewById(R.id.tvWorkout);
-				/*switch (getItem(position).getType()) {
+				switch (getItem(position).getType()) {
 				case 0:
-					setCompoundDrawablesWithIntrinsicBounds
-				}*/
+					tv.setCompoundDrawablesWithIntrinsicBounds(ic_free, null, null, null);
+					break;
+				case 1:
+					tv.setCompoundDrawablesWithIntrinsicBounds(ic_time, null, null, null);
+					break;
+				case 2:
+					tv.setCompoundDrawablesWithIntrinsicBounds(ic_dist, null, null, null);
+				}
 				tv.setText(getItem(position).getName());
 				
 				tv = (TextView) row.findViewById(R.id.tvSummary);
