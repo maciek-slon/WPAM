@@ -21,5 +21,6 @@
         <string name="welcome_share">Udostępnianie</string>
         <string name="welcome_achieved">Osiągnięcia</string>
         <string name="elevation">Wysokość</string>
+        <string name="welcome_info">Autorzy</string>
 
 </resources>
